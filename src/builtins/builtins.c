@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:58:35 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/29 11:18:49 by mananton         ###   ########.fr       */
+/*   Updated: 2025/09/29 13:50:30 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ int	is_builtin(const char *cmd)
 		return (1);
 	if (strcmp(cmd, "unset") == 0)   /* <- novo */
 		return (1);
+	if (strcmp(cmd, "exit") == 0)
+    	return (1);
 	return (0);
 }
 /*
@@ -62,5 +64,7 @@ int	run_builtin(char **argv, t_env *env)
 		return (builtin_export(env, argv));
 	if (strcmp(argv[0], "unset") == 0)           /* <- novo */
 		return (builtin_unset(env, argv));
+	if (strcmp(argv[0], "exit") == 0)
+    	return (builtin_exit(env, argv));
 	return (127);
 }

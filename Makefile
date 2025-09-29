@@ -6,7 +6,7 @@
 #    By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/25 09:44:25 by mananton          #+#    #+#              #
-#    Updated: 2025/09/29 11:20:07 by mananton         ###   ########.fr        #
+#    Updated: 2025/09/29 13:55:04 by mananton         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,9 @@ INCS    = -Iinclude
 SRC     = src/main.c \
           src/utils/io.c \
           src/utils/args.c \
+          src/utils/ft_itoa.c \
+          src/utils/ft_atoi_strict.c \
+          src/utils/ident.c \
           src/builtins/builtins.c \
           src/builtins/builtin_pwd.c \
           src/builtins/builtin_echo.c \
@@ -25,12 +28,14 @@ SRC     = src/main.c \
           src/builtins/builtin_env.c \
           src/builtins/builtin_export.c \
           src/builtins/builtin_unset.c \
+          src/builtins/builtin_exit.c \
           src/env/env_free.c \
           src/env/env_utils.c \
           src/env/env_init.c \
           src/env/env_get.c \
           src/env/env_set.c \
-          src/env/env_unset.c
+          src/env/env_unset.c \
+          src/env/env_shlvl.c
                         
 
 OBJ     = $(SRC:.c=.o)

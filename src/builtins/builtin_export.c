@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 13:33:48 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/26 13:33:53 by mananton         ###   ########.fr       */
+/*   Updated: 2025/09/29 13:27:07 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,15 @@ static char	*dup_n(const char *s, size_t n)
 	return (out);
 }
 
+static const char	*find_equal(const char *s)
+{
+	while (s && *s && *s != '=')
+		s++;
+	if (s && *s == '=')
+		return (s);
+	return (NULL);
+}
+
 /*
 ** handle_kv:
 ** Recebe um argumento "KEY=VALUE" e:
@@ -49,20 +58,16 @@ static int	handle_kv(t_env *env, const char *arg)
 	const char	*eq;
 	char		*key;
 	const char	*value;
-	size_t		klen;
 
-	eq = arg;
-	while (*eq && *eq != '=')
-		eq++;
-	if (!*eq)           /* não achou '=' → erro */
+	eq = find_equal(arg);
+	if (!eq || eq == arg)
 		return (1);
-	klen = (size_t)(eq - arg);
-	if (klen == 0)      /* KEY vazia → erro */
-		return (1);
-	key = dup_n(arg, klen);
+	key = dup_n(arg, (size_t)(eq - arg));
 	if (!key)
 		return (1);
-	value = eq + 1;     /* VALUE começa logo depois do '=' */
+	if (!is_valid_ident(key))
+		return (free(key), 1);
+	value = eq + 1;
 	if (env_set(env, key, value) != 0)
 		return (free(key), 1);
 	free(key);
@@ -82,15 +87,15 @@ int	builtin_export(t_env *env, char **argv)
 
 	if (!env || !argv)
 		return (1);
-	i = 1;          /* argv[0] = "export"; os pares começam em argv[1] */
+	i = 1;
 	status = 0;
 	while (argv[i])
 	{
 		if (handle_kv(env, argv[i]) != 0)
 		{
-			put_str_fd("minishell: export: unsupported: ", 2);
+			put_str_fd("minishell: export: invalid: ", 2);
 			put_str_fd(argv[i], 2);
-			put_str_fd(" (missing '=VALUE')\n", 2);
+			put_str_fd("\n", 2);
 			status = 1;
 		}
 		i++;

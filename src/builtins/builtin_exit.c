@@ -1,36 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_pwd.c                                      :+:      :+:    :+:   */
+/*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/25 09:56:43 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/29 11:38:28 by mananton         ###   ########.fr       */
+/*   Created: 2025/09/29 13:49:38 by mananton          #+#    #+#             */
+/*   Updated: 2025/09/29 13:49:40 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-** builtin_pwd (robusto):
-** - Tenta getcwd(NULL, 0).
-** - Se falhar: avisa no stderr e usa PWD da nossa env como fallback.
+** builtin_exit (versão mínima):
+** - Sem argumentos: imprime "exit" e sinaliza ao main para terminar.
+** - Com argumentos: ainda não suportamos → erro e não sai.
 */
-int	builtin_pwd(void)
+int	builtin_exit(t_env *env, char **argv)
 {
-	char		*cwd;
-	const char	*fallback;
-
-	cwd = getcwd(NULL, 0);
-	if (cwd)
+	(void)env;
+	if (argv[1])
 	{
-		put_str_fd(cwd, 1);
-		put_str_fd("\n", 1);
-		free(cwd);
-		return (0);
+		put_str_fd("minishell: exit: too many arguments\n", 2);
+		return (1);
 	}
-	perror("minishell: pwd: getcwd");
-	fallback = NULL; /* sem 'env' aqui (assinatura simples); print só do erro */
-	return (1);
+	put_str_fd("exit\n", 1);
+	return (MS_BUILTIN_EXIT);
 }

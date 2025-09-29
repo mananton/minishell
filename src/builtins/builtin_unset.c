@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:16:57 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/29 11:17:00 by mananton         ###   ########.fr       */
+/*   Updated: 2025/09/29 13:23:08 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	builtin_unset(t_env *env, char **argv)
 	status = 0;
 	while (argv[i])
 	{
-		if (!*argv[i] || has_equal(argv[i]))
+		if (!*argv[i] || has_equal(argv[i]) || !is_valid_ident(argv[i]))
 		{
 			put_str_fd("minishell: unset: invalid name: ", 2);
 			put_str_fd(argv[i], 2);
