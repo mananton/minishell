@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:58:35 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/26 12:24:03 by mananton         ###   ########.fr       */
+/*   Updated: 2025/09/29 10:48:12 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ int	is_builtin(const char *cmd)
 		return (1);
 	if (strcmp(cmd, "cd") == 0)
 		return (1);
-	if (strcmp(cmd, "env") == 0)  /* <- novo */
+	if (strcmp(cmd, "env") == 0)
+		return (1);
+	if (strcmp(cmd, "export") == 0)   /* <- novo */
 		return (1);
 	return (0);
 }
@@ -41,6 +43,7 @@ int	is_builtin(const char *cmd)
  *   - outro valor em caso de erro
  *   - 127 se não for builtin (por segurança, embora chamemos só quando for)
  */
+
 int	run_builtin(char **argv, t_env *env)
 {
 	if (!argv || !argv[0])
@@ -51,7 +54,9 @@ int	run_builtin(char **argv, t_env *env)
 		return (builtin_echo(argv));
 	if (strcmp(argv[0], "cd") == 0)
 		return (builtin_cd(argv, env));
-	if (strcmp(argv[0], "env") == 0)               /* <- novo */
+	if (strcmp(argv[0], "env") == 0)
 		return (builtin_env(env, argv));
+	if (strcmp(argv[0], "export") == 0)           /* <- novo */
+		return (builtin_export(env, argv));
 	return (127);
 }

@@ -6,7 +6,7 @@
 #    By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/25 09:44:25 by mananton          #+#    #+#              #
-#    Updated: 2025/09/26 12:22:40 by mananton         ###   ########.fr        #
+#    Updated: 2025/09/29 10:48:57 by mananton         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ SRC     = src/main.c \
           src/builtins/builtin_echo.c \
           src/builtins/builtin_cd.c \
           src/builtins/builtin_env.c \
+          src/builtins/builtin_export.c \
           src/env/env_free.c \
           src/env/env_utils.c \
           src/env/env_init.c \
