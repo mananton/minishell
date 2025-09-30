@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:58:35 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/29 13:50:30 by mananton         ###   ########.fr       */
+/*   Updated: 2025/09/30 13:35:26 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	run_builtin(char **argv, t_env *env)
 	if (strcmp(argv[0], "pwd") == 0)
 		return (builtin_pwd());
 	if (strcmp(argv[0], "echo") == 0)
-		return (builtin_echo(argv));
+		return (builtin_echo(env, argv));
 	if (strcmp(argv[0], "cd") == 0)
 		return (builtin_cd(argv, env));
 	if (strcmp(argv[0], "env") == 0)

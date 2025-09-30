@@ -6,20 +6,22 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:51:29 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/29 13:49:01 by mananton         ###   ########.fr       */
+/*   Updated: 2025/09/30 13:26:09 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define MS_BUILTIN_EXIT 200
+# define MS_BUILTIN_EXIT 1143
 
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# include <errno.h>
+# include <stdint.h>
 
 /* ---------- env: nossa tabela KEY=VALUE ---------- */
 typedef struct s_env
@@ -57,11 +59,21 @@ int			is_builtin(const char *cmd);
 int			run_builtin(char **argv, t_env *env);
 
 int			builtin_pwd(void);
-int			builtin_echo(char **argv);
+int			builtin_echo(t_env *env, char **argv);
 int			builtin_cd(char **argv, t_env *env);
 int			builtin_env(t_env *env, char **argv);
 int			builtin_export(t_env *env, char **argv);
 int			builtin_unset(t_env *env, char **argv); /* <- novo */
 int     	builtin_exit(t_env *env, char **argv);
+
+/* --- parse (aspas simples) --- */
+
+size_t  token_len(const char *s, size_t start, size_t *end);
+int     split_count_tokens(const char *line, size_t *out_count);
+char    *read_token(const char *s, size_t start, size_t end, size_t len);
+char    **split_build_argv(const char *line, size_t count);
+char    **split_args_quotes(const char *line);
+size_t  tkn_advance(const char *s, size_t i, size_t *len, int *err);
+
 
 #endif
