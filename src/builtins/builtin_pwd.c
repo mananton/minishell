@@ -6,18 +6,18 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:56:43 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/29 11:38:28 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/06 12:47:51 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-** builtin_pwd (robusto):
+** builtin_pwd (robusto com fallback):
 ** - Tenta getcwd(NULL, 0).
-** - Se falhar: avisa no stderr e usa PWD da nossa env como fallback.
+** - Se falhar: usa PWD do env.
 */
-int	builtin_pwd(void)
+int	builtin_pwd(t_env *env)
 {
 	char		*cwd;
 	const char	*fallback;
@@ -31,6 +31,11 @@ int	builtin_pwd(void)
 		return (0);
 	}
 	perror("minishell: pwd: getcwd");
-	fallback = NULL; /* sem 'env' aqui (assinatura simples); print só do erro */
+	fallback = env_get(env, "PWD");
+	if (fallback)
+	{
+		put_str_fd(fallback, 1);
+		put_str_fd("\n", 1);
+	}
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:51:29 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/30 13:26:09 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/06 13:59:27 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 typedef struct s_env
 {
 	char	**vars;
+	int     last_status;  /* NOVO: status do último comando */
 }			t_env;
 
 /* env/ */
@@ -58,13 +59,14 @@ int			is_valid_ident(const char *s);
 int			is_builtin(const char *cmd);
 int			run_builtin(char **argv, t_env *env);
 
-int			builtin_pwd(void);
+int			builtin_pwd(t_env *env);
 int			builtin_echo(t_env *env, char **argv);
 int			builtin_cd(char **argv, t_env *env);
 int			builtin_env(t_env *env, char **argv);
 int			builtin_export(t_env *env, char **argv);
 int			builtin_unset(t_env *env, char **argv); /* <- novo */
 int     	builtin_exit(t_env *env, char **argv);
+int         builtin_status(t_env *env, char **argv); /* <- novo */
 
 /* --- parse (aspas simples) --- */
 
@@ -74,6 +76,13 @@ char    *read_token(const char *s, size_t start, size_t end, size_t len);
 char    **split_build_argv(const char *line, size_t count);
 char    **split_args_quotes(const char *line);
 size_t  tkn_advance(const char *s, size_t i, size_t *len, int *err);
+
+/* --- exec --- */
+
+char    *path_join_seg(const char *dir, size_t dir_len, const char *cmd);
+char    *find_in_path(const char *cmd, t_env *env);
+int     exec_external(char **argv, t_env *env);
+char	*resolve_path(const char *cmd, t_env *env);
 
 
 #endif

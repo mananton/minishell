@@ -6,7 +6,7 @@
 #    By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/25 09:44:25 by mananton          #+#    #+#              #
-#    Updated: 2025/09/30 12:34:22 by mananton         ###   ########.fr        #
+#    Updated: 2025/10/06 13:59:45 by mananton         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,9 +29,14 @@ SRC     = src/main.c \
           src/builtins/builtin_export.c \
           src/builtins/builtin_unset.c \
           src/builtins/builtin_exit.c \
+          src/builtins/builtin_status.c \
           src/parse/lexer_simple.c \
           src/parse/lexer_build.c \
           src/parse/utils/token_utils.c \
+          src/exec/path_join.c \
+          src/exec/path_find.c \
+          src/exec/exec_resolve.c \
+          src/exec/exec_core.c \
           src/env/env_free.c \
           src/env/env_utils.c \
           src/env/env_init.c \

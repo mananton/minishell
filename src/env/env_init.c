@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 10:38:04 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/26 10:39:26 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/06 13:54:23 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ t_env	*env_init(char **envp)
 	/* 5) coloca NULL para marcar o fim do vetor */
 	
 	env->vars[i] = NULL;
+	
+	env->last_status = 0;  /* primeiro valor padrão */
 	
 	/* 6) devolve a estrutura pronta */
 	

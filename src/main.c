@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:47:01 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/30 12:10:36 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/06 14:05:07 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,15 @@ int	main(int argc, char **argv_unused, char **envp)
 				return (exit_code & 0xFF);               
 					/* encerra minishell     */
 			}
+			env->last_status = status & 0xFF;
 		}
 		// Caso não seja builtin mas ainda tenha algo digitado
 		else if (argv && argv[0] && *argv[0])
 		{
-			// Mostra erro padrão de "command not found"
-			put_str_fd("minishell: command not found: ", 2);
-			put_str_fd(argv[0], 2);
-			put_str_fd("\n", 2);
+			status = exec_external(argv, env);
+			env->last_status = status & 0xFF;
 		}
+
 		// Libera memória usada nesta iteração
 		free_argv(argv);
 		free(line);
