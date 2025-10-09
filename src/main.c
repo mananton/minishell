@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:47:01 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/06 14:05:07 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:09:39 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,66 +20,83 @@
 ** - Cria uma cópia do ambiente (env).
 ** - Corrige o SHLVL.
 ** - Entra num loop infinito para ler comandos.
-** - Executa builtins simples ou avisa "command not found".
+** - Executa builtins simples, comandos externos e redireções.
 */
 int	main(int argc, char **argv_unused, char **envp)
 {
-	t_env *env;  // ponteiro para a nossa tabela de variáveis de ambiente
-	char *line;  // string com a linha digitada pelo usuário
-	char **argv; // vetor de strings (palavras da linha → comando + args)
-	int status;  // código de retorno do builtin executado
-	(void)argc;        // não usamos argc → evitamos warning
-	(void)argv_unused; // não usamos argv → idem
-	// Inicializa nossa cópia do ambiente a partir do envp herdado do pai
+	t_env	*env;        // tabela de variáveis de ambiente
+	char	*line;       // linha lida do utilizador
+	char	**argv;      // vetor original de argumentos
+	char	**argv_clean;// vetor sem tokens de redireção
+	int		status;      // código de retorno da execução
+	t_redir	r;           // estrutura com ficheiros de redireção
+	int		saved_in;    // stdin original (para restaurar)
+	int		saved_out;   // stdout original (para restaurar)
+	int		fd_in;       // descritor de ficheiro de entrada
+	int		fd_out;      // descritor de ficheiro de saída
+
+	(void)argc;
+	(void)argv_unused;
+	// Inicializa o ambiente herdado e valida
 	env = env_init(envp);
 	if (!env)
-		// Se der erro na alocação, avisa e termina o programa com status 1
 		return (put_str_fd("minishell: env init failed\n", 2), 1);
-	// Corrige a variável SHLVL (incrementa +1, normaliza valores inválidos)
-	(void)env_fix_shlvl(env);
-	// Loop principal do shell
+	(void)env_fix_shlvl(env); // ajusta SHLVL
+
+	// Loop principal: lê e executa comandos
 	while (1)
 	{
-		// Mostra o prompt "minishell$ " e espera input do usuário
-		line = readline("minishell$ ");
+		line = readline("minishell$ ");     // mostra prompt e lê input
 		if (!line)
-			break ; // se readline devolve NULL (Ctrl+D) → sai do loop
-		// Se a linha não for vazia, guarda no histórico
+			break ;                        // Ctrl+D → termina o shell
 		if (*line)
-			add_history(line);
-		// Divide a linha em palavras (muito simples, separado só por espaço/tab)
-		argv = split_args_quotes(line);
-		// Se temos comando (argv[0]) e ele é builtin
-		if (argv && argv[0] && is_builtin(argv[0])) /* se é builtin...       */
+			add_history(line);             // guarda no histórico
+		argv = split_args_quotes(line);    // divide a linha em tokens
+
+		// Separa redireções (>, >>, <) e devolve argv “limpo”
+		if (parse_redirs(argv, &argv_clean, &r) != 0)
 		{
-			status = run_builtin(argv, env); /* executa o builtin     */
-			if (status >= MS_BUILTIN_EXIT) /* sentinela detectada?  */
+			free_argv(argv);
+			free(argv_clean);
+			free(line);
+			continue;                      // erro de sintaxe → ignora linha
+		}
+
+		// Se for builtin
+		if (argv_clean && argv_clean[0] && is_builtin(argv_clean[0]))
+		{
+			// aplica redireções temporárias no pai
+			if (apply_redirs_parent(&r, &saved_in, &saved_out, &fd_in, &fd_out) != 0)
+				status = 1;
+			else
+			{
+				status = run_builtin(argv_clean, env);
+				restore_stdio_parent(saved_in, saved_out, fd_in, fd_out);
+			}
+			// verifica se é exit
+			if (status >= MS_BUILTIN_EXIT)
 			{
 				int exit_code = status - MS_BUILTIN_EXIT;
-					/* extrai o exit code    */
-				free_argv(argv);                         
-					/* limpa argv desta linha*/
-				free(line);                              
-					/* limpa a linha lida    */
-				env_free(env);                           
-					/* limpa a nossa env     */
-				return (exit_code & 0xFF);               
-					/* encerra minishell     */
+				free_argv(argv);
+				free(argv_clean);
+				free(line);
+				env_free(env);
+				return (exit_code & 0xFF);
 			}
 			env->last_status = status & 0xFF;
 		}
-		// Caso não seja builtin mas ainda tenha algo digitado
-		else if (argv && argv[0] && *argv[0])
+		// Caso contrário → comando externo
+		else if (argv_clean && argv_clean[0] && *argv_clean[0])
 		{
-			status = exec_external(argv, env);
+			status = exec_external_redir(argv_clean, env, &r);
 			env->last_status = status & 0xFF;
 		}
 
-		// Libera memória usada nesta iteração
+		// Liberta memória da iteração
 		free_argv(argv);
+		free(argv_clean);
 		free(line);
 	}
-	// Saiu do loop (Ctrl+D ou "exit") → libera env e termina o programa
 	env_free(env);
 	return (0);
 }

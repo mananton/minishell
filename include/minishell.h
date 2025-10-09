@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:51:29 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/06 13:59:27 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/09 13:41:14 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,42 @@ typedef struct s_env
 	char	**vars;
 	int     last_status;  /* NOVO: status do último comando */
 }			t_env;
+
+typedef struct s_redir
+{
+	char	*in;     /* ficheiro de entrada  (NULL se não há) */
+	char	*out;    /* ficheiro de saída    (NULL se não há) */
+	int		append;  /* 0 => '>' ; 1 => '>>' */
+}	t_redir;
+
+/* --- pipeline structs --- */
+typedef struct s_cmd
+{
+	char    **argv;    /* argv limpo (sem tokens de redir)            */
+	t_redir  redir;    /* redireções do comando (se houver)           */
+}	t_cmd;
+
+/* --- pipeline parse --- */
+int   split_pipeline(char **argv, char ****segs, int *count);
+void  free_segments(char ***segs, int count);
+
+/* --- comandos por segmento (usa parse_redirs já existente) --- */
+int   build_cmdlist(char ***segs, int count, t_cmd **out_cmds);
+void  free_cmdlist(t_cmd *cmds, int count);
+
+/* --- execução do pipeline inteiro --- */
+int   exec_pipeline(t_cmd *cmds, int n, t_env *env);
+
+/* parse: retira tokens de redireção de argv e devolve argv “limpo” */
+int		parse_redirs(char **argv_in, char ***argv_out, t_redir *r);
+/* runtime: abrir fds conforme r (sem aplicar dup2) */
+int		open_redirs(const t_redir *r, int *fd_in, int *fd_out);
+/* runtime: para builtins → aplicar e restaurar stdio */
+int		apply_redirs_parent(const t_redir *r, int *saved_in, int *saved_out, int *fd_in, int *fd_out);
+void	restore_stdio_parent(int saved_in, int saved_out, int fd_in, int fd_out);
+
+/* exec externo agora recebe redireções */
+int		exec_external_redir(char **argv, t_env *env, const t_redir *r);
 
 /* env/ */
 t_env		*env_init(char **envp);
@@ -83,6 +119,7 @@ char    *path_join_seg(const char *dir, size_t dir_len, const char *cmd);
 char    *find_in_path(const char *cmd, t_env *env);
 int     exec_external(char **argv, t_env *env);
 char	*resolve_path(const char *cmd, t_env *env);
+int	    exec_error_code(const char *path);	
 
 
 #endif

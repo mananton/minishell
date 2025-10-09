@@ -32,11 +32,14 @@ SRC     = src/main.c \
           src/builtins/builtin_status.c \
           src/parse/lexer_simple.c \
           src/parse/lexer_build.c \
+          src/parse/redir_parse.c \
           src/parse/utils/token_utils.c \
           src/exec/path_join.c \
           src/exec/path_find.c \
           src/exec/exec_resolve.c \
           src/exec/exec_core.c \
+          src/exec/exec_errors.c \
+          src/exec/redir_runtime.c \
           src/env/env_free.c \
           src/env/env_utils.c \
           src/env/env_init.c \
