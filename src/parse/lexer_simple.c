@@ -73,11 +73,11 @@ int	split_count_tokens(const char *line, size_t *out_count)
 ** split_args_quotes:
 ** - Wrapper: conta tokens e depois constrói argv (2ª passada).
 */
-char	**split_args_quotes(const char *line)
+char	**split_args_quotes(const char *line, t_env *env)
 {
 	size_t	count;
 
 	if (split_count_tokens(line, &count) != 0)
 		return (NULL);
-	return (split_build_argv(line, count));
+	return (split_build_argv(line, count, env));
 }

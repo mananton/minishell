@@ -97,6 +97,7 @@ void	free_argv(char **argv)
 	i = 0;
 	while (argv[i])
 	{
+		token_meta_forget(argv[i]);
 		free(argv[i]);
 		i++;
 	}

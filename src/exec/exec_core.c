@@ -63,8 +63,12 @@ static int	spawn_and_exec(char *path, char **argv, t_env *env, const t_redir *r)
 		return (perror("minishell: fork"), 1);
 	if (pid == 0)                            // filho
 	{
-		if (open_redirs(r, &fd_in, &fd_out) != 0)
-			_exit(1);                        // erro ao abrir
+		int	res;
+
+		signals_setup_child();
+		res = open_redirs(r, &fd_in, &fd_out, env);
+		if (res != 0)
+			_exit(res == HDOC_INTERRUPTED ? HDOC_INTERRUPTED : 1);
 		if (child_apply_dup(fd_in, STDIN_FILENO, "minishell: dup2 <") != 0)
 			_exit(1);
 		if (child_apply_dup(fd_out, STDOUT_FILENO, "minishell: dup2 >") != 0)

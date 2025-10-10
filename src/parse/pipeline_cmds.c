@@ -21,6 +21,8 @@ static void	redir_zero(t_redir *r)
 	r->out_type = 0;
 	r->in_file = NULL;
 	r->out_file = NULL;
+	r->heredoc_delim = NULL;
+	r->heredoc_expand = 0;
 }
 
 /* prepara UM comando a partir de um segmento: parse_redirs -> argv limpo + redirs

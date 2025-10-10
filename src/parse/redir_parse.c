@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:58:03 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/09 10:58:12 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/10 11:01:40 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@
 /* zera a struct (sem alocar nada) */
 static void	redir_reset(t_redir *r)
 {
-	r->in = NULL;
-	r->out = NULL;
-	r->append = 0;
+	r->in_file = NULL;
+	r->out_file = NULL;
+	r->out_type = 0;
+	r->in_type = 0;
+	r->heredoc_delim = NULL;
+	r->heredoc_expand = 0;
 }
 
 /* conta quantos args vão sobrar sem tokens de redireção */
@@ -59,7 +62,17 @@ static char	**build_clean_argv(char **av, size_t keep)
 		if ((av[i][0] == '>' || av[i][0] == '<') && av[i + 1])
 			i += 2;           /* salta tokens de redir */
 		else
-			out[k++] = av[i++]; /* mantém */
+		{
+			out[k] = ft_strdup(av[i]);
+			if (!out[k])
+			{
+				out[k] = NULL;
+				free_argv(out);
+				return (NULL);
+			}
+			k++;
+			i++;
+		}
 	}
 	out[k] = NULL;
 	return (out);
@@ -73,17 +86,31 @@ static int	extract_redirs(char **av, t_redir *r)
 	i = 0;
 	while (av && av[i])
 	{
-		if (av[i][0] == '<' && av[i][1] == '\0' && av[i + 1])
-			r->in = av[i + 1];
+		if (av[i][0] == '<' && av[i][1] == '<' && av[i][2] == '\0' && av[i + 1])
+		{
+			r->in_type = 2;
+			r->heredoc_delim = av[i + 1];
+			r->in_file = NULL;
+			if ((token_meta_flags(av[i + 1]) & TOKEN_META_QUOTED) == 0)
+				r->heredoc_expand = 1;
+			else
+				r->heredoc_expand = 0;
+		}
+		else if (av[i][0] == '<' && av[i][1] == '\0' && av[i + 1])
+		{
+			r->in_file = av[i + 1];
+			r->in_type = 1;
+			r->heredoc_delim = NULL;
+		}
 		else if (av[i][0] == '>' && av[i][1] == '\0' && av[i + 1])
 		{
-			r->out = av[i + 1];
-			r->append = 0;
+			r->out_file = av[i + 1];
+			r->out_type = 1;
 		}
 		else if (av[i][0] == '>' && av[i][1] == '>' && av[i][2] == '\0' && av[i + 1])
 		{
-			r->out = av[i + 1];
-			r->append = 1;
+			r->out_file = av[i + 1];
+			r->out_type = 2;
 		}
 		else if ((av[i][0] == '>' || av[i][0] == '<') && !av[i + 1])
 			return (put_str_fd("minishell: syntax error: expected filename after redirection\n", 2), 1);
@@ -92,13 +119,14 @@ static int	extract_redirs(char **av, t_redir *r)
 	return (0);
 }
 
-/* API: separa redireções e devolve argv “limpo” (sem alocar/copy strings) */
+/* API: separa redireções e devolve argv “limpo” (duplica os argumentos úteis) */
 int	parse_redirs(char **argv_in, char ***argv_out, t_redir *r)
 {
 	size_t keep;
 
 	if (!argv_in || !argv_in[0] || !argv_out || !r)
 		return (1);
+	*argv_out = NULL;
 	redir_reset(r);
 	if (extract_redirs(argv_in, r) != 0)
 		return (1);

@@ -14,18 +14,17 @@
 #include <stdlib.h>
 
 /* free dos vetores de segmentos (N vetores) */
-void	free_segments(char ***segs, int count)
+void	free_segments(char ****segs, int count)
 {
-	int i;
+	int		i;
+	char	***arr;
 
 	if (!segs || !*segs)
 		return ;
+	arr = *segs;
 	i = 0;
 	while (i < count)
-	{
-		free((*segs)[i]);
-		i++;
-	}
-	free(*segs);
+		free(arr[i++]);
+	free(arr);
 	*segs = NULL;
 }
