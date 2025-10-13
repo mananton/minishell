@@ -64,7 +64,7 @@ int	exec_error_code(const char *path)
 		return (handle_stat_error(path));
 	if (S_ISDIR(st.st_mode))
 	{
-		err3(path, "is a directory");
+		err3(path, "Is a directory");
 		return (126);
 	}
 	if (access(path, X_OK) != 0)

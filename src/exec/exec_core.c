@@ -90,9 +90,9 @@ int	exec_external_redir(char **argv, t_env *env, const t_redir *r)
 	path = resolve_path(argv[0], env);       // PATH ou caminho com '/'
 	if (!path)                               // não encontrado no PATH
 	{
-		put_str_fd("minishell: command not found: ", 2);
+		put_str_fd("minishell: ", 2);
 		put_str_fd(argv[0], 2);
-		put_str_fd("\n", 2);
+		put_str_fd(": command not found\n", 2);
 		return (127);
 	}
 	rc = spawn_and_exec(path, argv, env, r); // cria filho e executa

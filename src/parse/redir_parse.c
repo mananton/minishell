@@ -38,20 +38,27 @@ static void	redir_reset(t_redir *r)
 static int	redir_append(t_redir *r, int kind, char *word, int flag)
 {
 	t_redir_step	*tmp;
+	char			*dup;
+	t_redir_step	*old;
 
 	tmp = (t_redir_step *)malloc(sizeof(t_redir_step) * (r->count + 1));
 	if (!tmp)
 		return (1);
-	if (r->steps)
+	old = r->steps;
+	if (old)
+		memcpy(tmp, old, sizeof(t_redir_step) * r->count);
+	dup = ft_strdup(word);
+	if (!dup)
 	{
-		memcpy(tmp, r->steps, sizeof(t_redir_step) * r->count);
-		free(r->steps);
+		free(tmp);
+		return (1);
 	}
 	tmp[r->count].kind = kind;
-	tmp[r->count].word = word;
+	tmp[r->count].word = dup;
 	tmp[r->count].flag = flag;
 	r->steps = tmp;
 	r->count += 1;
+	free(old);
 	return (0);
 }
 
@@ -177,6 +184,17 @@ void	redir_clear(t_redir *r)
 {
 	if (!r)
 		return ;
+	if (r->steps)
+	{
+		size_t	i;
+
+		i = 0;
+		while (i < r->count)
+		{
+			free(r->steps[i].word);
+			i++;
+		}
+	}
 	free(r->steps);
 	r->steps = NULL;
 	r->count = 0;

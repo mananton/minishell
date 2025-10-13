@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 14:32:42 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/09 14:32:44 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/13 13:07:06 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <sys/wait.h>  /* waitpid */
 #include <stdlib.h>    /* malloc, free */
 #include <stdio.h>     /* perror */
+#include <signal.h>
 
 /* forward: implementada noutro ficheiro */
 int	run_child_cmd(int idx, int n, int fds[][2], t_cmd *cmd, t_env *env);
@@ -50,7 +51,7 @@ static void	close_pipes_parent(int n, int fds[][2])
 }
 
 /* espera N pids; devolve status do último comando */
-static int	wait_all_pids(pid_t *p, int n)
+static int	wait_all_pids(pid_t *p, t_cmd *cmds, int n)
 {
 	int i;
 	int s;
@@ -60,14 +61,22 @@ static int	wait_all_pids(pid_t *p, int n)
 	last = 0;
 	while (i < n)
 	{
-		if (waitpid(p[i], &s, 0) > 0 && i == n - 1)
+		if (waitpid(p[i], &s, 0) > 0)
 		{
-			if (WIFEXITED(s))
-				last = WEXITSTATUS(s);
-			else if (WIFSIGNALED(s))
-				last = 128 + WTERMSIG(s);
-			else
-				last = 1;
+			if (i < n - 1 && WIFSIGNALED(s) && WTERMSIG(s) == SIGPIPE)
+			{
+				put_str_fd(cmds[i].argv[0], 2);
+				put_str_fd(": write error: Broken pipe\n", 2);
+			}
+			if (i == n - 1)
+			{
+				if (WIFEXITED(s))
+					last = WEXITSTATUS(s);
+				else if (WIFSIGNALED(s))
+					last = 128 + WTERMSIG(s);
+				else
+					last = 1;
+			}
 		}
 		i++;
 	}
@@ -116,13 +125,13 @@ static int	fork_all_children(int n, int fds[][2], t_cmd *cmds, t_env *env,
 }
 
 /* no pai: fecha pipes (se houver), espera filhos e liberta memória */
-static int	cleanup_and_wait(int n, int fds[][2], pid_t *pids)
+static int	cleanup_and_wait(int n, int fds[][2], pid_t *pids, t_cmd *cmds)
 {
 	int status;
 
 	if (n > 1)
 		close_pipes_parent(n, fds);
-	status = wait_all_pids(pids, n);
+	status = wait_all_pids(pids, cmds, n);
 	free(pids);
 	if (n > 1)
 		free(fds);
@@ -154,6 +163,6 @@ int	exec_pipeline(t_cmd *cmds, int n, t_env *env)
 			free(fds);
 		return (1);
 	}
-	status = cleanup_and_wait(n, fds, pids);
+	status = cleanup_and_wait(n, fds, pids, cmds);
 	return (status);
 }

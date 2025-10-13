@@ -117,9 +117,9 @@ static void	run_external_child(char **argv, t_env *env)
 	path = resolve_path(argv[0], env);
 	if (!path)
 	{
-		put_str_fd("minishell: command not found: ", 2);
+		put_str_fd("minishell: ", 2);
 		put_str_fd(argv[0], 2);
-		put_str_fd("\n", 2);
+		put_str_fd(": command not found\n", 2);
 		_exit(127);
 	}
 	envp = NULL;
