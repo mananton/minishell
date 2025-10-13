@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 10:12:00 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/30 13:23:57 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/13 14:07:20 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,12 @@ static int	is_flag_n(const char *s)
 
 int	builtin_echo(t_env *env, char **argv)
 {
-	int		newline;
-	int		i;
+	int	newline;
+	int	i;
 
 	(void)env;
 	newline = 1;
 	i = 1;
-	/* trata múltiplos -n */
 	while (argv[i] && is_flag_n(argv[i]))
 	{
 		newline = 0;

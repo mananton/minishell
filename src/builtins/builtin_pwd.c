@@ -6,17 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:56:43 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/06 12:47:51 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/13 13:56:37 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-** builtin_pwd (robusto com fallback):
-** - Tenta getcwd(NULL, 0).
-** - Se falhar: usa PWD do env.
-*/
 int	builtin_pwd(t_env *env)
 {
 	char		*cwd;

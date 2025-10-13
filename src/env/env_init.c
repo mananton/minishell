@@ -37,5 +37,6 @@ t_env	*env_init(char **envp)
 	}
 	env->vars[i] = NULL;
 	env->last_status = 0;
+	env->export_marks = NULL;
 	return (env);
 }

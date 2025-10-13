@@ -6,15 +6,13 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:14:43 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/30 14:07:53 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/13 14:25:12 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* src/env/env_unset.c */
 #include "minishell.h"
 #include <stdlib.h>
 
-/* compara "KEY=VALUE" com key ("KEY") */
 static int	key_match(const char *entry, const char *key)
 {
 	size_t	i;
@@ -31,13 +29,12 @@ static int	key_match(const char *entry, const char *key)
 	return (entry[i] == '=');
 }
 
-/* devolve o índice da key em env->vars, ou (size_t)-1 se não existir */
 static size_t	find_index(const t_env *env, const char *key)
 {
 	size_t	i;
 
 	if (!env || !env->vars || !key)
-		return ((size_t)-1);
+		return ((size_t) - 1);
 	i = 0;
 	while (env->vars[i])
 	{
@@ -48,7 +45,6 @@ static size_t	find_index(const t_env *env, const char *key)
 	return ((size_t)-1);
 }
 
-/* conta quantas entradas há (até NULL) */
 static size_t	env_count(const t_env *env)
 {
 	size_t	n;
@@ -59,7 +55,6 @@ static size_t	env_count(const t_env *env)
 	return (n);
 }
 
-/* remove env->vars[idx], faz shift à esquerda e termina com NULL */
 static void	remove_at(t_env *env, size_t idx)
 {
 	size_t	n;
@@ -80,7 +75,6 @@ static void	remove_at(t_env *env, size_t idx)
 	env->vars[n - 1] = NULL;
 }
 
-/* API: remove a variável "key" se existir */
 int	env_unset(t_env *env, const char *key)
 {
 	size_t	idx;
@@ -91,6 +85,6 @@ int	env_unset(t_env *env, const char *key)
 	if (idx == (size_t)-1)
 		return (0);
 	remove_at(env, idx);
-	export_mark_remove(key);
+	export_mark_remove(env, key);
 	return (0);
 }

@@ -27,6 +27,9 @@ SRC     = src/main.c \
           src/builtins/builtin_echo.c \
           src/builtins/builtin_cd.c \
           src/builtins/builtin_env.c \
+          src/builtins/export_common.c \
+          src/builtins/export_print.c \
+          src/builtins/export_actions.c \
           src/builtins/builtin_export.c \
           src/builtins/builtin_unset.c \
           src/builtins/builtin_exit.c \

@@ -6,17 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/29 11:42:06 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/29 12:29:42 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/13 14:23:07 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* 
-** parse_shlvl:
-** - Tenta converter s para inteiro.
-** - Retorna 1 se inválido ou vazio.
-*/
 static int	parse_shlvl(const char *s)
 {
 	int	lvl;
@@ -30,10 +25,6 @@ static int	parse_shlvl(const char *s)
 	return (lvl + 1);
 }
 
-/*
-** normalize_shlvl:
-** - Aplica regras de normalização.
-*/
 static int	normalize_shlvl(int lvl)
 {
 	if (lvl < 0)
@@ -43,11 +34,6 @@ static int	normalize_shlvl(int lvl)
 	return (lvl);
 }
 
-/*
-** env_fix_shlvl:
-** - Corrige/atualiza SHLVL na nossa env.
-** - Usa ft_itoa para criar string.
-*/
 int	env_fix_shlvl(t_env *env)
 {
 	int		lvl;

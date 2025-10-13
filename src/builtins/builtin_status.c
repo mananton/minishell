@@ -6,23 +6,21 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 13:58:50 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/06 14:26:31 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/13 13:56:44 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* imprime inteiro [0..255] em fd=1, com \n, sem depender de strlen fora do buffer */
-static void print_uint_0_255(int n)
+static void	print_uint_0_255(int n)
 {
-	char buf[12];      /* espaço de sobra */
-	int  i;
+	int		i;
+	char	buf[12];
 
 	if (n < 0)
-		n = 0;         /* só por segurança */
-	n &= 0xFF;         /* normaliza 0..255 */
-
-	buf[11] = '\0';    /* terminador */
+		n = 0;
+	n &= 0xFF;
+	buf[11] = '\0';
 	i = 10;
 	if (n == 0)
 	{
@@ -37,11 +35,10 @@ static void print_uint_0_255(int n)
 		n /= 10;
 		i--;
 	}
-	put_str_fd(&buf[i + 1], 1);  /* agora é string terminada */
+	put_str_fd(&buf[i + 1], 1);
 	put_str_fd("\n", 1);
 }
 
-/* Imprime env->last_status e retorna 0 (o comando em si correu bem) */
 int	builtin_status(t_env *env, char **argv)
 {
 	(void)argv;

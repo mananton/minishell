@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/26 10:30:36 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/26 10:30:53 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/13 14:23:55 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,6 @@ char	*ft_strdup(const char *s)
 	return (out);
 }
 
-/*
-** key_matches:
-** Verifica se "entry" começa por "key=" (ex.: "PWD=").
-*/
 int	key_matches(const char *entry, const char *key)
 {
 	size_t	klen;
@@ -45,11 +41,6 @@ int	key_matches(const char *entry, const char *key)
 	return (1);
 }
 
-/*
-** env_find_index:
-** Procura o índice da KEY no vetor env->vars ("KEY=VALUE").
-** Retorna -1 se não encontrar.
-*/
 int	env_find_index(t_env *env, const char *key)
 {
 	size_t	i;
@@ -66,11 +57,6 @@ int	env_find_index(t_env *env, const char *key)
 	return (-1);
 }
 
-/*
-** env_grow:
-** Aumenta o vetor env->vars para acomodar 'add' novas entradas.
-** Copia os ponteiros antigos e mantém o terminador NULL.
-*/
 char	**env_grow(t_env *env, size_t add)
 {
 	size_t	count;
