@@ -12,6 +12,16 @@
 
 #include "minishell.h"
 
+static int	is_blank(char c)
+{
+	return (c == ' ' || c == '\t');
+}
+
+static int	is_dquote_escapable(char c)
+{
+	return (c == '\\' || c == '"' || c == '$');
+}
+
 static int	is_var_start(char c)
 {
 	if (c >= 'a' && c <= 'z')
@@ -208,6 +218,32 @@ static size_t	token_final_len(const char *s, size_t start, size_t end,
 	{
 		if (handle_quote_char(s[i], &in_single, &in_double, quoted_any))
 			i++;
+		else if (!in_single && s[i] == '\\')
+		{
+			if (in_double)
+			{
+				if (s[i + 1] && is_dquote_escapable(s[i + 1]))
+				{
+					total++;
+					i += 2;
+				}
+				else
+				{
+					total++;
+					i += 1;
+				}
+			}
+			else
+			{
+				if (s[i + 1])
+				{
+					total++;
+					i += 2;
+				}
+				else
+					i += 1;
+			}
+		}
 		else if (s[i] == '$')
 			total += process_dollar_len(s, &i, end, status_len,
 				env, in_single, err);
@@ -234,10 +270,12 @@ char	*read_token(const char *s, size_t start, size_t end, size_t len,
 	int		in_double;
 	int		err;
 	int		quoted_any;
+	int		inhibit_glob;
 
 	(void)len;
 	err = 0;
 	quoted_any = 0;
+	inhibit_glob = 0;
 	j = token_final_len(s, start, end, status_len, env, &err, &quoted_any);
 	if (err)
 		return (NULL);
@@ -252,6 +290,33 @@ char	*read_token(const char *s, size_t start, size_t end, size_t len,
 	{
 		if (handle_quote_char(s[i], &in_single, &in_double, NULL))
 			i++;
+		else if (!in_single && s[i] == '\\')
+		{
+			if (in_double)
+			{
+				if (s[i + 1] && is_dquote_escapable(s[i + 1]))
+				{
+					out[j++] = s[i + 1];
+					i += 2;
+				}
+				else
+				{
+					out[j++] = s[i++];
+				}
+			}
+			else
+			{
+				if (s[i + 1])
+				{
+					if (s[i + 1] == '*' || s[i + 1] == '?' || s[i + 1] == '[')
+						inhibit_glob = 1;
+					out[j++] = s[i + 1];
+					i += 2;
+				}
+				else
+					i += 1;
+			}
+		}
 		else if (s[i] == '$')
 		{
 			if (process_dollar_copy(s, &i, end, out, &j, status, env,
@@ -262,14 +327,18 @@ char	*read_token(const char *s, size_t start, size_t end, size_t len,
 			out[j++] = s[i++];
 	}
 	out[j] = '\0';
-	token_meta_register(out, quoted_any ? TOKEN_META_QUOTED : 0);
+	if (quoted_any)
+		inhibit_glob = 0;
+	token_meta_register(out,
+		(quoted_any ? TOKEN_META_QUOTED : 0)
+		| (inhibit_glob ? TOKEN_META_NO_GLOB : 0));
 	return (out);
 }
 
 /* avança espaços/tabs a partir de i e devolve novo índice */
 static size_t	skip_blanks(const char *s, size_t i)
 {
-	while (s[i] == ' ' || s[i] == '\t')
+	while (s[i] && is_blank(s[i]))
 		i++;
 	return (i);
 }
@@ -301,10 +370,13 @@ char	**split_build_argv(const char *line, size_t count, t_env *env)
 	while (line[i])
 	{
 		len = token_len(line, i, &end);
-		if (len == (size_t)-1)
-			return (free(status), free_argv(argv),
-				put_str_fd("minishell: syntax error: unclosed quote\n", 2),
-				NULL);
+			if (len == (size_t)-1)
+			{
+				argv[k] = NULL;
+				free(status);
+				free_argv(argv);
+				return (NULL);
+			}
 		argv[k] = read_token(line, i, end, len, status, status_len, env);
 		if (!argv[k++])
 			return (free(status), free_argv(argv), NULL);
@@ -312,5 +384,20 @@ char	**split_build_argv(const char *line, size_t count, t_env *env)
 	}
 	argv[k] = NULL;
 	free(status);
+	i = 0;
+	k = 0;
+	while (argv[i])
+	{
+		if (argv[i][0] == '\0'
+			&& (token_meta_flags(argv[i]) & TOKEN_META_QUOTED) == 0)
+		{
+			token_meta_forget(argv[i]);
+			free(argv[i]);
+		}
+		else
+			argv[k++] = argv[i];
+		i++;
+	}
+	argv[k] = NULL;
 	return (argv);
 }

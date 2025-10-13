@@ -22,9 +22,26 @@ int		open_redirs(const t_redir *r, int *fd_in, int *fd_out, t_env *env);
 int		exec_error_code(const char *path);
 
 /* dup do pipe consoante posição no pipeline: idx em [0..n-1] */
+static int	redir_has_stdin(const t_redir *redir)
+{
+	size_t i;
+
+	if (!redir)
+		return (0);
+	i = 0;
+	while (i < redir->count)
+	{
+		if (redir->steps[i].kind == REDIR_IN
+			|| redir->steps[i].kind == REDIR_HEREDOC)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 static int	pipe_dups(int idx, int n, int fds[][2], const t_redir *redir)
 {
-	if (idx > 0 && (!redir || redir->in_type == 0))
+	if (idx > 0 && (!redir || !redir_has_stdin(redir)))
 	{
 		if (dup2(fds[idx - 1][0], STDIN_FILENO) < 0)
 			return (perror("minishell: dup2 <pipe"), 1);

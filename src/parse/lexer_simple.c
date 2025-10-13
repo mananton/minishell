@@ -12,6 +12,53 @@
 
 #include "minishell.h"
 
+static int	is_blank(char c)
+{
+	return (c == ' ' || c == '\t');
+}
+
+static int	is_metachar(char c)
+{
+	return (c == '|' || c == '<' || c == '>');
+}
+
+static size_t	metachar_span(const char *s, size_t i)
+{
+	if ((s[i] == '<' || s[i] == '>') && s[i + 1] == s[i])
+		return (2);
+	return (1);
+}
+
+static int	is_dquote_escapable(char c)
+{
+	return (c == '\\' || c == '"' || c == '$');
+}
+
+static int	handle_escape_len(const char *s, size_t *i, size_t *len,
+			int in_double)
+{
+	if (in_double)
+	{
+		if (s[*i + 1] && is_dquote_escapable(s[*i + 1]))
+		{
+			(*len)++;
+			*i += 2;
+			return (0);
+		}
+		(*len)++;
+		*i += 1;
+		return (0);
+	}
+	if (!s[*i + 1])
+	{
+		put_str_fd("minishell: syntax error: unfinished escape sequence\n", 2);
+		return (1);
+	}
+	(*len)++;
+	*i += 2;
+	return (0);
+}
+
 /*
 ** token_len:
 ** - Mede o próximo token, somando o "tamanho lógico" (aspas só agrupam).
@@ -22,18 +69,60 @@ size_t	token_len(const char *s, size_t start, size_t *end)
 {
 	size_t	i;
 	size_t	len;
-	int		err;
+	int		in_single;
+	int		in_double;
 
+	if (!s || !s[start])
+	{
+		if (end)
+			*end = start;
+		return (0);
+	}
 	i = start;
 	len = 0;
-	err = 0;
-	while (s[i] && !(s[i] == ' ' || s[i] == '\t'))
+	in_single = 0;
+	in_double = 0;
+	if (is_metachar(s[i]))
 	{
-		i = tkn_advance(s, i, &len, &err);
-		if (err)
-			return ((size_t)-1);
+		size_t	span;
+
+		span = metachar_span(s, i);
+		if (end)
+			*end = i + span;
+		return (span);
 	}
-	*end = i;
+	while (s[i])
+	{
+		if (!in_single && !in_double && (is_blank(s[i]) || is_metachar(s[i])))
+			break ;
+		if (!in_double && s[i] == '\'')
+		{
+			in_single = !in_single;
+			i++;
+			continue ;
+		}
+		if (!in_single && s[i] == '"')
+		{
+			in_double = !in_double;
+			i++;
+			continue ;
+		}
+		if (!in_single && s[i] == '\\')
+		{
+			if (handle_escape_len(s, &i, &len, in_double) != 0)
+				return ((size_t)-1);
+			continue ;
+		}
+		len++;
+		i++;
+	}
+	if (in_single || in_double)
+	{
+		put_str_fd("minishell: syntax error: unclosed quote\n", 2);
+		return ((size_t)-1);
+	}
+	if (end)
+		*end = i;
 	return (len);
 }
 
@@ -46,24 +135,24 @@ int	split_count_tokens(const char *line, size_t *out_count)
 {
 	size_t	i;
 	size_t	end;
-	size_t	len;
 	size_t	count;
+	size_t	len;
 
 	if (!line)
 		return (-1);
 	i = 0;
 	count = 0;
-	while (line[i] == ' ' || line[i] == '\t')
-		i++;
 	while (line[i])
 	{
+		while (line[i] && is_blank(line[i]))
+			i++;
+		if (!line[i])
+			break ;
 		len = token_len(line, i, &end);
 		if (len == (size_t)-1)
-			return (put_str_fd("minishell: syntax error: unclosed quote\n", 2), -1);
+			return (-1);
 		count++;
 		i = end;
-		while (line[i] == ' ' || line[i] == '\t')
-			i++;
 	}
 	*out_count = count;
 	return (0);

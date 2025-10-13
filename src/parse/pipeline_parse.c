@@ -13,6 +13,12 @@
 #include "minishell.h"
 #include <stdlib.h>
 
+static int	is_pipe_token(char *s)
+{
+	return (s && s[0] == '|' && s[1] == '\0'
+		&& (token_meta_flags(s) & TOKEN_META_QUOTED) == 0);
+}
+
 /* conta quantos '|' existem (para alocar segmentos) */
 static int	count_pipes(char **av)
 {
@@ -23,7 +29,7 @@ static int	count_pipes(char **av)
 	c = 0;
 	while (av && av[i])
 	{
-		if (av[i][0] == '|' && av[i][1] == '\0')
+		if (is_pipe_token(av[i]))
 			c++;
 		i++;
 	}
@@ -38,7 +44,7 @@ static int	seg_len(char **av)
 	i = 0;
 	while (av[i])
 	{
-		if (av[i][0] == '|' && av[i][1] == '\0')
+		if (is_pipe_token(av[i]))
 			break ;
 		i++;
 	}
@@ -65,7 +71,7 @@ static int	fill_one_segment(char **argv, int pos, char ***dst, int *next_pos)
 	}
 	(*dst)[len] = NULL;
 	pos += len;
-	if (argv[pos] && argv[pos][0] == '|' && argv[pos][1] == '\0')
+	if (argv[pos] && is_pipe_token(argv[pos]))
 		pos++;
 	*next_pos = pos;
 	return (0);

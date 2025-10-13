@@ -91,5 +91,6 @@ int	env_unset(t_env *env, const char *key)
 	if (idx == (size_t)-1)
 		return (0);
 	remove_at(env, idx);
+	export_mark_remove(key);
 	return (0);
 }

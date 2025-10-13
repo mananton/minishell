@@ -20,6 +20,7 @@ SRC     = src/main.c \
           src/utils/args.c \
           src/utils/ft_itoa.c \
           src/utils/ft_atoi_strict.c \
+          src/utils/glob_expand.c \
           src/utils/ident.c \
           src/builtins/builtins.c \
           src/builtins/builtin_pwd.c \
@@ -52,6 +53,7 @@ SRC     = src/main.c \
           src/env/env_get.c \
           src/env/env_set.c \
           src/env/env_unset.c \
+          src/env/env_marks.c \
           src/env/env_shlvl.c
                         
 

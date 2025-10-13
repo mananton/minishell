@@ -50,6 +50,8 @@ int	main(int argc, char **argv_unused, char **envp)
 	// Loop principal: lê e executa comandos
 	while (1)
 	{
+		r.steps = NULL;
+		r.count = 0;
 		line = readline("minishell$ ");     // mostra prompt e lê input
 		if (!line)
 		{
@@ -59,6 +61,19 @@ int	main(int argc, char **argv_unused, char **envp)
 		if (*line)
 			add_history(line);             // guarda no histórico
 		argv = split_args_quotes(line, env);    // divide a linha em tokens
+		if (!argv)
+		{
+			free(line);
+			continue;
+		}
+		if (expand_wildcards(&argv) != 0)
+		{
+			put_str_fd("minishell: malloc failed\n", 2);
+			free_argv(argv);
+			free(line);
+			continue;
+		}
+		argv_clean = NULL;
 
 		/* ---- PIPELINE (N comandos) ------------------------------------------- */
 		{
@@ -92,7 +107,9 @@ int	main(int argc, char **argv_unused, char **envp)
 		if (parse_redirs(argv, &argv_clean, &r) != 0)
 		{
 			free_argv(argv);
-			free_argv(argv_clean);
+			if (argv_clean)
+				free_argv(argv_clean);
+			redir_clear(&r);
 			free(line);
 			continue;                      // erro de sintaxe → ignora linha
 		}
@@ -120,6 +137,7 @@ int	main(int argc, char **argv_unused, char **envp)
 				exit_code = status - MS_BUILTIN_EXIT;
 				free_argv(argv);
 				free_argv(argv_clean);
+				redir_clear(&r);
 				free(line);
 				env_free(env);
 				return (exit_code & 0xFF);
@@ -136,6 +154,7 @@ int	main(int argc, char **argv_unused, char **envp)
 		// Liberta memória da iteração
 		free_argv(argv);
 		free_argv(argv_clean);
+		redir_clear(&r);
 		free(line);
 	}
 	env_free(env);

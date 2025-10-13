@@ -70,6 +70,7 @@ int	env_set(t_env *env, const char *key, const char *value)
 	{
 		free(env->vars[idx]);   /* substitui a entrada antiga */
 		env->vars[idx] = entry;
+		export_mark_remove(key);
 		return (0);
 	}
 	if (!env_grow(env, 1))     /* precisa de espaço para mais 1 entrada */
@@ -79,5 +80,6 @@ int	env_set(t_env *env, const char *key, const char *value)
 		i++;
 	env->vars[i] = entry;      /* coloca a nova entrada no fim */
 	env->vars[i + 1] = NULL;   /* mantém o vetor terminado por NULL */
+	export_mark_remove(key);
 	return (0);
 }

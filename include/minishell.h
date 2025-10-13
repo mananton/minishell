@@ -31,15 +31,18 @@ typedef struct s_env
 	int     last_status;  /* NOVO: status do último comando */
 }			t_env;
 
+typedef struct s_redir_step
+{
+	int		kind;
+	char		*word;
+	int		flag;
+}t_redir_step;
+
 typedef struct s_redir
 {
-	char	*in_file;    // nome do ficheiro após '<' ou NULL
-	char	*out_file;   // nome do ficheiro após '>' ou '>>' ou NULL
-	char	*heredoc_delim; // delimitador do heredoc ou NULL
-	int		in_type;     // 0 = none, 1 = '<', 2 = '<<'
-	int		out_type;    // 0 = none, 1 = '>', 2 = '>>'
-	int		heredoc_expand; // 0 = literal (por agora)
-}	t_redir;
+	t_redir_step	*steps;
+	size_t			count;
+}t_redir;
 
 
 /* --- pipeline structs --- */
@@ -50,7 +53,12 @@ typedef struct s_cmd
 }	t_cmd;
 
 # define TOKEN_META_QUOTED 0x1
+# define TOKEN_META_NO_GLOB 0x2
 # define HDOC_INTERRUPTED 130
+# define REDIR_IN 1
+# define REDIR_HEREDOC 2
+# define REDIR_OUT_TRUNC 3
+# define REDIR_OUT_APPEND 4
 
 /* --- pipeline parse --- */
 int   split_pipeline(char **argv, char ****segs, int *count);
@@ -98,6 +106,10 @@ int			key_matches(const char *entry, const char *key);
 int			env_find_index(t_env *env, const char *key);
 char		**env_grow(t_env *env, size_t add);
 int			is_valid_ident(const char *s);
+void			export_mark_add(const char *key);
+void			export_mark_remove(const char *key);
+int			export_mark_has(const char *key);
+void			export_mark_clear_all(void);
 
 /* builtins/ */
 
@@ -121,10 +133,11 @@ char    *read_token(const char *s, size_t start, size_t end, size_t len,
 			const char *status, size_t status_len, t_env *env);
 char    **split_build_argv(const char *line, size_t count, t_env *env);
 char    **split_args_quotes(const char *line, t_env *env);
-size_t  tkn_advance(const char *s, size_t i, size_t *len, int *err);
 void	token_meta_register(char *str, unsigned int flags);
 unsigned int	token_meta_flags(const char *str);
 void	token_meta_forget(char *str);
+int		expand_wildcards(char ***argv);
+void	redir_clear(t_redir *r);
 
 /* sinais */
 void	signals_register_env(t_env *env);

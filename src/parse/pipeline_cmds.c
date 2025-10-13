@@ -17,12 +17,8 @@
 /* zera um t_redir (ajuste se tua struct tiver mais campos) */
 static void	redir_zero(t_redir *r)
 {
-	r->in_type = 0;
-	r->out_type = 0;
-	r->in_file = NULL;
-	r->out_file = NULL;
-	r->heredoc_delim = NULL;
-	r->heredoc_expand = 0;
+	r->steps = NULL;
+	r->count = 0;
 }
 
 /* prepara UM comando a partir de um segmento: parse_redirs -> argv limpo + redirs
@@ -35,12 +31,14 @@ static int	prepare_one_cmd(char **seg, t_cmd *dst)
 	redir_zero(&r);
 	clean = NULL;
 	if (parse_redirs(seg, &clean, &r) != 0)
+	{
+		redir_clear(&r);
 		return (1);
+	}
 	if (!clean || !clean[0])
 	{
 		free(clean);
-		/* se parse_redirs alocou strings em r, liberte-as aqui se aplicável */
-		/* ex.: free(r.in_file); free(r.out_file); */
+		redir_clear(&r);
 		return (1);
 	}
 	dst->argv = clean;
@@ -67,8 +65,7 @@ int	build_cmdlist(char ***segs, int count, t_cmd **out_cmds)
 			while (--i >= 0)
 			{
 				free_argv(cmds[i].argv);
-				/* se r.* forem alocados, liberte-os aqui também */
-				/* ex.: free(cmds[i].redir.in_file); free(cmds[i].redir.out_file); */
+				redir_clear(&cmds[i].redir);
 			}
 			free(cmds);
 			return (1);
@@ -90,8 +87,7 @@ void	free_cmdlist(t_cmd *cmds, int count)
 	while (i < count)
 	{
 		free_argv(cmds[i].argv);
-		/* se parse_redirs alocar estes campos, liberte-os aqui: */
-		/* ex.: free(cmds[i].redir.in_file); free(cmds[i].redir.out_file); */
+		redir_clear(&cmds[i].redir);
 		i++;
 	}
 	free(cmds);

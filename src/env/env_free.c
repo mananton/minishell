@@ -23,6 +23,7 @@ void	env_free(t_env *env)
 	/* 1) se a struct for NULL, não há nada para libertar */
 	if (!env)
 		return ;
+	export_mark_clear_all();
 
 	/* 2) se o vetor existir, libertamos cada string "KEY=VALUE" */
 	if (env->vars)

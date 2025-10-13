@@ -55,6 +55,11 @@ int	builtin_cd(char **argv, t_env *env)
 	char		*new_pwd;
 	int			print_path;
 
+	if (argv && argv[1] && argv[2])
+	{
+		put_str_fd("minishell: cd: too many arguments\n", 2);
+		return (1);
+	}
 	if (cd_resolve_target(argv, env, &path, &print_path))
 		return (1);
 	old_pwd = env_get(env, "PWD");

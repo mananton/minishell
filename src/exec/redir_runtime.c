@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:59:32 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/10 10:39:24 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/13 11:18:55 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,8 +222,8 @@ static char	*expand_heredoc_line(const char *line, t_env *env,
 	return (out);
 }
 
-static int	handle_heredoc(const t_redir *r, int *fd_in, t_env *env,
-			const char *status)
+static int	handle_heredoc_step(const char *delim, int expand,
+		int *fd_in, t_env *env, const char *status)
 {
 	int		pipefd[2];
 	char	*line;
@@ -231,9 +231,9 @@ static int	handle_heredoc(const t_redir *r, int *fd_in, t_env *env,
 	FILE	*saved_stream;
 	struct sigaction	sa;
 	struct sigaction	old;
-	int					res;
+	int		res;
 
-	if (!r->heredoc_delim)
+	if (!delim)
 		return (0);
 	if (pipe(pipefd) < 0)
 		return (perror("minishell: pipe"), 1);
@@ -254,10 +254,10 @@ static int	handle_heredoc(const t_redir *r, int *fd_in, t_env *env,
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || strcmp(line, r->heredoc_delim) == 0)
+		if (!line || strcmp(line, delim) == 0)
 			break ;
 		expanded = NULL;
-		if (r->heredoc_expand && env)
+		if (expand && env)
 		{
 			expanded = expand_heredoc_line(line, env, status);
 			if (!expanded)
@@ -293,53 +293,106 @@ static int	handle_heredoc(const t_redir *r, int *fd_in, t_env *env,
 		close(pipefd[0]);
 		return (1);
 	}
+	if (*fd_in >= 0)
+		close(*fd_in);
 	*fd_in = pipefd[0];
 	return (0);
 }
+
 /*
 ** abre fds conforme r; devolve 0 se ok, 1 se erro
 ** - fd_in / fd_out ficam -1 quando não usados
-** - in_type:  0 = none, 1 = '<', 2 = '<<'
-** - out_type: 0 = none, 1 = '>', 2 = '>>'
 */
 int	open_redirs(const t_redir *r, int *fd_in, int *fd_out, t_env *env)
 {
-	int	flags;
 	char	*status;
-	int		hd_res;
+	size_t	i;
+	int		res;
+	int		flags;
 
 	*fd_in = -1;
 	*fd_out = -1;
-	if (!r)
+	if (!r || r->count == 0)
 		return (0);
-	if (r->in_type == 2)
+	status = NULL;
+	i = 0;
+	while (i < r->count)
 	{
-		status = ft_itoa(env ? env->last_status : 0);
-		if (!status)
-			return (put_str_fd("minishell: malloc failed\n", 2), 1);
-		hd_res = handle_heredoc(r, fd_in, env, status);
-		free(status);
-		if (hd_res != 0)
-			return (hd_res);
+		if (r->steps[i].kind == REDIR_IN)
+		{
+			if (*fd_in >= 0)
+				close(*fd_in);
+			*fd_in = open(r->steps[i].word, O_RDONLY);
+			if (*fd_in < 0)
+			{
+				perror("minishell: open <");
+				res = 1;
+				goto cleanup_error;
+			}
+		}
+		else if (r->steps[i].kind == REDIR_HEREDOC)
+		{
+			if (!status)
+			{
+				status = ft_itoa(env ? env->last_status : 0);
+				if (!status)
+				{
+					put_str_fd("minishell: malloc failed\n", 2);
+					res = 1;
+					goto cleanup_error;
+				}
+			}
+			res = handle_heredoc_step(r->steps[i].word, r->steps[i].flag,
+				fd_in, env, status);
+			if (res != 0)
+			{
+				if (res == HDOC_INTERRUPTED)
+					goto cleanup_hdoc;
+				goto cleanup_error;
+			}
+		}
+		else if (r->steps[i].kind == REDIR_OUT_TRUNC
+			|| r->steps[i].kind == REDIR_OUT_APPEND)
+		{
+			if (*fd_out >= 0)
+				close(*fd_out);
+			flags = O_WRONLY | O_CREAT;
+			if (r->steps[i].kind == REDIR_OUT_TRUNC)
+				flags |= O_TRUNC;
+			else
+				flags |= O_APPEND;
+			*fd_out = open(r->steps[i].word, flags, 0644);
+			if (*fd_out < 0)
+			{
+				perror("minishell: open >");
+				res = 1;
+				goto cleanup_error;
+			}
+		}
+		i++;
 	}
-	else if (r->in_type == 1 && r->in_file)
-	{
-		*fd_in = open(r->in_file, O_RDONLY);
-		if (*fd_in < 0)
-			return (perror("minishell: open <"), 1);
-	}
-	if (r->out_type != 0 && r->out_file)
-	{
-		flags = O_WRONLY | O_CREAT;
-		if (r->out_type == 1)
-			flags = flags | O_TRUNC;
-		else if (r->out_type == 2)
-			flags = flags | O_APPEND;
-		*fd_out = open(r->out_file, flags, 0644);
-		if (*fd_out < 0)
-			return (perror("minishell: open >"), 1);
-	}
+	free(status);
 	return (0);
+
+cleanup_hdoc:
+	free(status);
+	if (*fd_in >= 0)
+		close(*fd_in);
+	if (*fd_out >= 0)
+		close(*fd_out);
+	*fd_in = -1;
+	*fd_out = -1;
+	return (HDOC_INTERRUPTED);
+
+cleanup_error:
+	free(status);
+	if (*fd_in >= 0)
+		close(*fd_in);
+	if (*fd_out >= 0)
+		close(*fd_out);
+	*fd_in = -1;
+	*fd_out = -1;
+	return (res);
 }
 
 /* salva backups de STDIN/STDOUT no processo pai */
