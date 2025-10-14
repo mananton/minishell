@@ -1,38 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_resolve.c                                     :+:      :+:    :+:   */
+/*   exec_core_external.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 11:45:08 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 11:07:24 by mananton         ###   ########.fr       */
+/*   Created: 2025/10/02 11:46:21 by mananton          #+#    #+#             */
+/*   Updated: 2025/10/14 14:37:12 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "exec_core_internal.h"
 
-static int	has_slash(const char *s)
+int	exec_external_redir(char **argv, t_env *env, const t_redir *r)
 {
-	size_t	i;
+	char	*path;
+	int		status;
 
-	if (!s)
+	if (!argv || !argv[0])
 		return (0);
-	i = 0;
-	while (s[i])
+	path = resolve_path(argv[0], env);
+	if (!path)
 	{
-		if (s[i] == '/')
-			return (1);
-		i++;
+		put_str_fd("minishell: ", 2);
+		put_str_fd(argv[0], 2);
+		put_str_fd(": command not found\n", 2);
+		return (127);
 	}
-	return (0);
-}
-
-char	*resolve_path(const char *cmd, t_env *env)
-{
-	if (!cmd || !*cmd)
-		return (NULL);
-	if (has_slash(cmd))
-		return (ft_strdup(cmd));
-	return (find_in_path(cmd, env));
+	status = spawn_and_exec(path, argv, env, r);
+	free(path);
+	return (status);
 }

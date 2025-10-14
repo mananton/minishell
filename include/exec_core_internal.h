@@ -1,38 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_resolve.c                                     :+:      :+:    :+:   */
+/*   exec_core_internal.h                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 11:45:08 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 11:07:24 by mananton         ###   ########.fr       */
+/*   Created: 2025/10/14 14:36:42 by mananton          #+#    #+#             */
+/*   Updated: 2025/10/14 14:36:42 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef EXEC_CORE_INTERNAL_H
+# define EXEC_CORE_INTERNAL_H
 
-static int	has_slash(const char *s)
-{
-	size_t	i;
+# include "minishell.h"
 
-	if (!s)
-		return (0);
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '/')
-			return (1);
-		i++;
-	}
-	return (0);
-}
+int	spawn_and_exec(char *path, char **argv, t_env *env, const t_redir *redir);
 
-char	*resolve_path(const char *cmd, t_env *env)
-{
-	if (!cmd || !*cmd)
-		return (NULL);
-	if (has_slash(cmd))
-		return (ft_strdup(cmd));
-	return (find_in_path(cmd, env));
-}
+#endif

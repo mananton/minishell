@@ -37,18 +37,47 @@ SRC     = src/main.c \
           src/parse/pipeline_cmds.c \
           src/parse/pipeline_free.c \
           src/parse/pipeline_parse.c \
-          src/parse/lexer_simple.c \
-          src/parse/lexer_build.c \
-          src/parse/redir_parse.c \
+          src/parse/pipeline_split.c \
+          src/parse/lexer/lexer_base.c \
+          src/parse/lexer/lexer_names.c \
+          src/parse/lexer/lexer_dollar.c \
+          src/parse/lexer/lexer_len.c \
+          src/parse/lexer/lexer_build_helpers.c \
+          src/parse/lexer/lexer_token_prepare.c \
+          src/parse/lexer/lexer_build_main.c \
+          src/parse/lexer/lexer_build_tokens.c \
+          src/parse/lexer/lexer_simple_utils.c \
+          src/parse/lexer/lexer_split_args.c \
+          src/parse/redir/redir_utils.c \
+          src/parse/redir/redir_build_argv.c \
+          src/parse/redir/redir_extract.c \
+          src/parse/redir/redir_main.c \
           src/parse/utils/token_utils.c \
-          src/exec/child_run.c \
+          src/exec/child/child_pipe.c \
+          src/exec/child/child_io.c \
+          src/exec/child/child_exec.c \
           src/exec/path_join.c \
           src/exec/path_find.c \
           src/exec/exec_resolve.c \
-          src/exec/exec_core.c \
+          src/exec/exec_core_child.c \
+          src/exec/exec_core_external.c \
           src/exec/exec_errors.c \
-          src/exec/pipe_run.c \
-          src/exec/redir_runtime.c \
+          src/exec/pipe/pipe_context.c \
+          src/exec/pipe/pipe_child.c \
+          src/exec/pipe/pipe_finish.c \
+          src/exec/pipe/pipe_run_main.c \
+          src/exec/redir/redir_hd_signal.c \
+          src/exec/redir/redir_hd_session.c \
+          src/exec/redir/redir_hd_expand_utils.c \
+          src/exec/redir/redir_hd_expand_value.c \
+          src/exec/redir/redir_hd_expand_scan.c \
+          src/exec/redir/redir_hd_expand_emit.c \
+          src/exec/redir/redir_hd_expand_main.c \
+          src/exec/redir/redir_hd_state.c \
+          src/exec/redir/redir_fd_utils.c \
+          src/exec/redir/redir_open.c \
+          src/exec/redir/redir_parent.c \
+          src/exec/redir/redir_parent_apply.c \
           src/signals/signals.c \
           src/env/env_free.c \
           src/env/env_utils.c \

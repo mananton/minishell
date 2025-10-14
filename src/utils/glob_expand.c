@@ -6,20 +6,13 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 13:05:00 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/11 13:05:00 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/14 14:38:50 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <glob.h>
 #include <string.h>
-
-typedef struct s_expand_node
-{
-	char			*value;
-	int			own;
-	struct s_expand_node	*next;
-}t_expand_node;
 
 static int	contains_wildcards(const char *s)
 {

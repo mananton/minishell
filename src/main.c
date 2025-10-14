@@ -31,10 +31,7 @@ int	main(int argc, char **argv_unused, char **envp)
 	char	**argv_clean;// vetor sem tokens de redireção
 	int		status;      // código de retorno da execução
 	t_redir	r;           // estrutura com ficheiros de redireção
-	int		saved_in;    // stdin original (para restaurar)
-	int		saved_out;   // stdout original (para restaurar)
-	int		fd_in;       // descritor de ficheiro de entrada
-	int		fd_out;      // descritor de ficheiro de saída
+	t_parent_redir	io;  // FDs salvos e temporários para redireções
 
 	(void)argc;
 	(void)argv_unused;
@@ -120,14 +117,18 @@ int	main(int argc, char **argv_unused, char **envp)
 			int redir_rc;
 
 			// aplica redireções temporárias no pai
-			redir_rc = apply_redirs_parent(&r, &saved_in, &saved_out,
-					&fd_in, &fd_out, env);
+			io.saved_in = -1;
+			io.saved_out = -1;
+			io.fd_in = -1;
+			io.fd_out = -1;
+			redir_rc = apply_redirs_parent(&r, &io, env);
 			if (redir_rc != 0)
 				status = (redir_rc == HDOC_INTERRUPTED) ? HDOC_INTERRUPTED : 1;
 			else
 			{
 				status = run_builtin(argv_clean, env);
-				restore_stdio_parent(saved_in, saved_out, fd_in, fd_out);
+				restore_stdio_parent(io.saved_in, io.saved_out,
+					io.fd_in, io.fd_out);
 			}
 			// verifica se é exit
 			if (status >= MS_BUILTIN_EXIT)

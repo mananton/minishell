@@ -1,38 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_resolve.c                                     :+:      :+:    :+:   */
+/*   pipeline_parse_internal.h                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 11:45:08 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 11:07:24 by mananton         ###   ########.fr       */
+/*   Created: 2025/10/14 16:32:12 by mananton          #+#    #+#             */
+/*   Updated: 2025/10/14 16:32:12 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef PIPELINE_PARSE_INTERNAL_H
+# define PIPELINE_PARSE_INTERNAL_H
 
-static int	has_slash(const char *s)
-{
-	size_t	i;
+# include "minishell.h"
 
-	if (!s)
-		return (0);
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '/')
-			return (1);
-		i++;
-	}
-	return (0);
-}
+int	count_pipes(char **av);
+int	split_fill(char **argv, char ***tmp, int count);
 
-char	*resolve_path(const char *cmd, t_env *env)
-{
-	if (!cmd || !*cmd)
-		return (NULL);
-	if (has_slash(cmd))
-		return (ft_strdup(cmd));
-	return (find_in_path(cmd, env));
-}
+#endif

@@ -6,11 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:59:31 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/09 13:59:34 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/14 14:26:16 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "pipeline_parse_internal.h"
 #include <stdlib.h>
 
 static int	is_pipe_token(char *s)
@@ -19,11 +19,10 @@ static int	is_pipe_token(char *s)
 		&& (token_meta_flags(s) & TOKEN_META_QUOTED) == 0);
 }
 
-/* conta quantos '|' existem (para alocar segmentos) */
-static int	count_pipes(char **av)
+int	count_pipes(char **av)
 {
-	int i;
-	int c;
+	int	i;
+	int	c;
 
 	i = 0;
 	c = 0;
@@ -36,10 +35,9 @@ static int	count_pipes(char **av)
 	return (c);
 }
 
-/* tamanho do segmento até ao próximo '|' ou fim */
 static int	seg_len(char **av)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (av[i])
@@ -51,7 +49,6 @@ static int	seg_len(char **av)
 	return (i);
 }
 
-/* aloca e preenche UM segmento (cópia rasa dos ponteiros) */
 static int	fill_one_segment(char **argv, int pos, char ***dst, int *next_pos)
 {
 	int		len;
@@ -77,8 +74,7 @@ static int	fill_one_segment(char **argv, int pos, char ***dst, int *next_pos)
 	return (0);
 }
 
-/* percorre argv e preenche TODOS os segmentos no array tmp */
-static int	split_fill(char **argv, char ***tmp, int count)
+int	split_fill(char **argv, char ***tmp, int count)
 {
 	int	pos;
 	int	i;
@@ -91,24 +87,5 @@ static int	split_fill(char **argv, char ***tmp, int count)
 			return (free_segments(&tmp, i), 1);
 		i++;
 	}
-	return (0);
-}
-
-/* divide argv em N segmentos separados por '|' (sem copiar as strings) */
-int	split_pipeline(char **argv, char ****segs, int *count)
-{
-	char	***tmp;
-
-	*segs = NULL;
-	*count = 0;
-	if (!argv || !argv[0])
-		return (1);
-	*count = count_pipes(argv) + 1;
-	tmp = (char ***)malloc(sizeof(char **) * (*count));
-	if (!tmp)
-		return (1);
-	if (split_fill(argv, tmp, *count) != 0)
-		return (free(tmp), 1);
-	*segs = tmp;
 	return (0);
 }

@@ -1,38 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_resolve.c                                     :+:      :+:    :+:   */
+/*   lexer_split_args.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 11:45:08 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 11:07:24 by mananton         ###   ########.fr       */
+/*   Created: 2025/10/14 15:56:48 by mananton          #+#    #+#             */
+/*   Updated: 2025/10/14 15:56:48 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "lexer_internal.h"
 
-static int	has_slash(const char *s)
+char	**split_args_quotes(const char *line, t_env *env)
 {
-	size_t	i;
+	size_t	count;
 
-	if (!s)
-		return (0);
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == '/')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-char	*resolve_path(const char *cmd, t_env *env)
-{
-	if (!cmd || !*cmd)
+	if (!line)
 		return (NULL);
-	if (has_slash(cmd))
-		return (ft_strdup(cmd));
-	return (find_in_path(cmd, env));
+	if (split_count_tokens(line, &count) != 0)
+		return (NULL);
+	return (split_build_argv(line, count, env));
 }

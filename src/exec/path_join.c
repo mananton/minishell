@@ -6,14 +6,13 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 11:43:12 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/06 12:52:22 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/14 11:09:42 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <stdlib.h>
 
-/* local: strlen simples (não exposta) */
 static size_t	ft_strlen_(const char *s)
 {
 	size_t	i;
@@ -24,7 +23,6 @@ static size_t	ft_strlen_(const char *s)
 	return (i);
 }
 
-/* aloca buffer para dir(sem '\0') + '/' + cmd + '\0' */
 static char	*join_alloc(size_t dir_len, const char *cmd)
 {
 	size_t	clen;
@@ -33,8 +31,8 @@ static char	*join_alloc(size_t dir_len, const char *cmd)
 	return ((char *)malloc(dir_len + 1 + clen + 1));
 }
 
-/* preenche o buffer com dir[0..dir_len-1] + '/' + cmd */
-static void	join_fill(char *dst, const char *dir, size_t dir_len, const char *cmd)
+static void	join_fill(char *dst, const char *dir, size_t dir_len,
+		const char *cmd)
 {
 	size_t	i;
 	size_t	j;
@@ -55,7 +53,6 @@ static void	join_fill(char *dst, const char *dir, size_t dir_len, const char *cm
 	dst[i + j] = '\0';
 }
 
-/* junta dir + "/" + cmd em novo malloc (API interna compartilhada) */
 char	*path_join_seg(const char *dir, size_t dir_len, const char *cmd)
 {
 	char	*p;

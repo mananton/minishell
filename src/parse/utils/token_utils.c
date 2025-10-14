@@ -6,21 +6,19 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 12:33:05 by mananton          #+#    #+#             */
-/*   Updated: 2025/09/30 12:33:26 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/14 12:54:01 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <stdlib.h>
 
-typedef struct s_token_meta
+static t_token_meta	**token_meta_head(void)
 {
-	char				*str;
-	unsigned int		flags;
-	struct s_token_meta	*next;
-}	t_token_meta;
+	static t_token_meta	*head = NULL;
 
-static t_token_meta	*g_token_meta = NULL;
+	return (&head);
+}
 
 void	token_meta_forget(char *str)
 {
@@ -29,8 +27,8 @@ void	token_meta_forget(char *str)
 
 	if (!str)
 		return ;
-	prev = &g_token_meta;
-	cur = g_token_meta;
+	prev = token_meta_head();
+	cur = *prev;
 	while (cur)
 	{
 		if (cur->str == str)
@@ -56,15 +54,15 @@ void	token_meta_register(char *str, unsigned int flags)
 		return ;
 	node->str = str;
 	node->flags = flags;
-	node->next = g_token_meta;
-	g_token_meta = node;
+	node->next = *token_meta_head();
+	*token_meta_head() = node;
 }
 
 unsigned int	token_meta_flags(const char *str)
 {
 	t_token_meta	*cur;
 
-	cur = g_token_meta;
+	cur = *token_meta_head();
 	while (cur)
 	{
 		if (cur->str == str)
