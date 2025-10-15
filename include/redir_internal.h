@@ -14,9 +14,7 @@
 # define REDIR_INTERNAL_H
 
 # include "minishell.h"
-# include <signal.h>
-
-extern volatile sig_atomic_t	g_hd_sigint;
+# include "signals_internal.h"
 
 int								write_line_fd(int fd, const char *line);
 void							heredoc_sigint(int sig);

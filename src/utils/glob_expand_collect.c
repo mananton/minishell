@@ -1,29 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   args.c                                             :+:      :+:    :+:   */
+/*   glob_expand_collect.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/15 11:50:12 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 11:50:12 by mananton         ###   ########.fr       */
+/*   Created: 2025/10/15 12:31:12 by mananton          #+#    #+#             */
+/*   Updated: 2025/10/15 12:31:12 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "glob_expand_internal.h"
 
-void	free_argv(char **argv)
+size_t	glob_count_nodes(t_expand_node *node)
 {
-	size_t	i;
+	size_t	count;
 
-	if (!argv)
-		return ;
-	i = 0;
-	while (argv[i])
+	count = 0;
+	while (node)
 	{
-		token_meta_forget(argv[i]);
-		free(argv[i]);
-		i++;
+		count++;
+		node = node->next;
 	}
-	free(argv);
+	return (count);
+}
+
+void	glob_copy_nodes(char **dst, t_expand_node *node)
+{
+	size_t	index;
+
+	index = 0;
+	while (node)
+	{
+		dst[index] = node->value;
+		index++;
+		node = node->next;
+	}
 }

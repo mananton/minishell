@@ -6,238 +6,108 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 13:05:00 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 14:38:50 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 11:49:25 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include <glob.h>
-#include <string.h>
+#include "glob_expand_internal.h"
 
-static int	contains_wildcards(const char *s)
+static void	release_free_list(t_glob_state *st)
 {
-	while (s && *s)
+	char	*ptr;
+
+	while (st->free_len > 0)
 	{
-		if (*s == '*' || *s == '?' || *s == '[')
-			return (1);
-		s++;
+		st->free_len--;
+		ptr = st->free_list[st->free_len];
+		token_meta_forget(ptr);
+		free(ptr);
 	}
-	return (0);
+	free(st->free_list);
+	st->free_list = NULL;
+	st->free_cap = 0;
 }
 
-static int	add_to_free(char ***arr, size_t *len, size_t *cap, char *ptr)
+static int	attach_matches(t_glob_state *st, t_expand_node *match_head,
+		t_expand_node *match_tail, char *orig)
 {
-	char	**tmp;
-	size_t	new_cap;
-
-	if (*len + 1 <= *cap)
-	{
-		(*arr)[(*len)++] = ptr;
-		return (0);
-	}
-	new_cap = (*cap == 0) ? 8 : *cap * 2;
-	tmp = (char **)malloc(sizeof(char *) * new_cap);
-	if (!tmp)
+	if (glob_add_to_free(&st->free_list, &st->free_len, &st->free_cap, orig)
+		!= 0)
 		return (1);
-	if (*len > 0)
-		memcpy(tmp, *arr, sizeof(char *) * (*len));
-	free(*arr);
-	*arr = tmp;
-	*cap = new_cap;
-	(*arr)[(*len)++] = ptr;
-	return (0);
-}
-
-static void	free_node_list(t_expand_node *node)
-{
-	t_expand_node	*next;
-
-	while (node)
-	{
-		next = node->next;
-		if (node->own)
-		{
-			token_meta_forget(node->value);
-			free(node->value);
-		}
-		free(node);
-		node = next;
-	}
-}
-
-static void	free_nodes_shallow(t_expand_node *node)
-{
-	t_expand_node	*next;
-
-	while (node)
-	{
-		next = node->next;
-		free(node);
-		node = next;
-	}
-}
-
-static int	append_node(t_expand_node **head, t_expand_node **tail,
-		char *value, int own)
-{
-	t_expand_node	*node;
-
-	node = (t_expand_node *)malloc(sizeof(t_expand_node));
-	if (!node)
-		return (1);
-	node->value = value;
-	node->own = own;
-	node->next = NULL;
-	if (*tail)
-		(*tail)->next = node;
+	if (st->tail)
+		st->tail->next = match_head;
 	else
-		*head = node;
-	*tail = node;
+		st->head = match_head;
+	st->tail = match_tail;
+	glob_register_node_meta(match_head);
 	return (0);
 }
 
-static int	build_match_nodes(glob_t *gl, t_expand_node **out_head,
-		t_expand_node **out_tail)
+static int	process_token(t_glob_state *st, char *tok)
 {
-	char		*dup;
-	size_t		idx;
-	t_expand_node	*head;
-	t_expand_node	*tail;
+	unsigned int	flags;
+	t_expand_node	*match_head;
+	t_expand_node	*match_tail;
+	int				matches;
 
-	if (gl->gl_pathc == 0)
-		return (0);
-	head = NULL;
-	tail = NULL;
-	idx = 0;
-	while (idx < gl->gl_pathc)
+	flags = token_meta_flags(tok);
+	if ((flags & (TOKEN_META_QUOTED | TOKEN_META_NO_GLOB)) != 0)
+		return (glob_append_node(&st->head, &st->tail, tok, 0));
+	if (!glob_contains_wildcards(tok))
+		return (glob_append_node(&st->head, &st->tail, tok, 0));
+	match_head = NULL;
+	match_tail = NULL;
+	matches = glob_fetch_matches(tok, &match_head, &match_tail);
+	if (matches <= 0)
+		return (glob_append_node(&st->head, &st->tail, tok, 0));
+	if (attach_matches(st, match_head, match_tail, tok) != 0)
 	{
-		dup = ft_strdup(gl->gl_pathv[idx]);
-		if (!dup)
-		{
-			free_node_list(head);
-			return (-1);
-		}
-		if (append_node(&head, &tail, dup, 1) != 0)
-		{
-			free(dup);
-			free_node_list(head);
-			return (-1);
-		}
-		idx++;
+		glob_free_node_list(match_head, 1);
+		return (glob_append_node(&st->head, &st->tail, tok, 0));
 	}
-	*out_head = head;
-	*out_tail = tail;
-	return ((int)gl->gl_pathc);
+	return (0);
+}
+
+static int	finalize_state(t_glob_state *st, char ***argv)
+{
+	size_t	count;
+	char	**newv;
+
+	count = glob_count_nodes(st->head);
+	newv = (char **)malloc(sizeof(char *) * (count + 1));
+	if (!newv)
+		return (1);
+	glob_copy_nodes(newv, st->head);
+	newv[count] = NULL;
+	glob_free_node_list(st->head, 0);
+	free(*argv);
+	*argv = newv;
+	return (0);
 }
 
 int	expand_wildcards(char ***argv)
 {
-	t_expand_node	*head;
-	t_expand_node	*tail;
+	t_glob_state	state;
+	size_t			idx;
 	char			**old;
-	char			**newv;
-	char			**to_free;
-	size_t		free_len;
-	size_t		free_cap;
-	size_t		count;
-	size_t		idx;
 
 	if (!argv || !*argv)
 		return (0);
+	state.head = NULL;
+	state.tail = NULL;
+	state.free_list = NULL;
+	state.free_len = 0;
+	state.free_cap = 0;
 	old = *argv;
-	head = NULL;
-	tail = NULL;
-	to_free = NULL;
-	free_len = 0;
-	free_cap = 0;
 	idx = 0;
-	while (old[idx])
-	{
-		char			*tok;
-		unsigned int	flags;
-		glob_t		gl;
-		t_expand_node	*tmp_head;
-		t_expand_node	*tmp_tail;
-		int			matches;
-
-		tok = old[idx];
-		flags = token_meta_flags(tok);
-		if (!(flags & (TOKEN_META_QUOTED | TOKEN_META_NO_GLOB))
-			&& contains_wildcards(tok))
-		{
-			matches = 0;
-			memset(&gl, 0, sizeof(gl));
-			if (glob(tok, 0, NULL, &gl) == 0)
-				matches = build_match_nodes(&gl, &tmp_head, &tmp_tail);
-			else
-				matches = 0;
-			globfree(&gl);
-			if (matches > 0)
-			{
-				if (add_to_free(&to_free, &free_len, &free_cap, tok) != 0)
-				{
-					free_node_list(tmp_head);
-					matches = 0;
-				}
-				else
-				{
-					if (tail)
-						tail->next = tmp_head;
-					else
-						head = tmp_head;
-					tail = tmp_tail;
-					for (t_expand_node *cur = tmp_head; cur; cur = cur->next)
-						token_meta_register(cur->value, 0);
-					idx++;
-					continue ;
-				}
-			}
-		}
-		if (append_node(&head, &tail, tok, 0) != 0)
-		{
-			free_node_list(head);
-			free(to_free);
-			return (1);
-		}
+	while (old[idx] && process_token(&state, old[idx]) == 0)
 		idx++;
-	}
-	count = 0;
+	if (old[idx] || finalize_state(&state, argv) != 0)
 	{
-		t_expand_node	*cur = head;
-
-		while (cur)
-		{
-			count++;
-			cur = cur->next;
-		}
-	}
-	newv = (char **)malloc(sizeof(char *) * (count + 1));
-	if (!newv)
-	{
-		free_node_list(head);
-		free(to_free);
+		glob_free_node_list(state.head, 1);
+		release_free_list(&state);
 		return (1);
 	}
-	idx = 0;
-	{
-		t_expand_node	*cur = head;
-
-		while (cur)
-		{
-			newv[idx++] = cur->value;
-			cur = cur->next;
-		}
-	}
-	newv[idx] = NULL;
-	free_nodes_shallow(head);
-	free(*argv);
-	*argv = newv;
-	while (free_len > 0)
-	{
-		char *ptr = to_free[--free_len];
-		token_meta_forget(ptr);
-		free(ptr);
-	}
-	free(to_free);
+	release_free_list(&state);
 	return (0);
 }

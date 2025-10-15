@@ -22,28 +22,6 @@ int	skip_blanks_simple(const char *line)
 	return (index);
 }
 
-int	skip_token_simple(const char *line, int index)
-{
-	int	in_single;
-	int	in_double;
-
-	in_single = 0;
-	in_double = 0;
-	while (line[index])
-	{
-		if (!in_double && line[index] == '\'')
-			in_single = !in_single;
-		else if (!in_single && line[index] == '"')
-			in_double = !in_double;
-		else if (!in_single && !in_double && is_blank(line[index]))
-			break ;
-		index++;
-	}
-	if (in_single || in_double)
-		return (-1);
-	return (index);
-}
-
 int	count_tokens(const char *line)
 {
 	int	index;

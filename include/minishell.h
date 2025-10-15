@@ -6,7 +6,7 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 09:51:29 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 14:38:55 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 12:27:24 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_export_mark
 typedef struct s_env
 {
 	char					**vars;
-	int last_status; /* NOVO: status do último comando */
+	int						last_status;
 	t_export_mark			*export_marks;
 }							t_env;
 
@@ -55,11 +55,10 @@ typedef struct s_redir
 	size_t					count;
 }							t_redir;
 
-/* --- pipeline structs --- */
 typedef struct s_cmd
 {
-	char **argv;   /* argv limpo (sem tokens de redir)            */
-	t_redir redir; /* redireções do comando (se houver)           */
+	char					**argv;
+	t_redir					redir;
 }							t_cmd;
 
 typedef struct s_parent_redir
@@ -74,7 +73,7 @@ typedef struct s_child_ctx
 {
 	int						idx;
 	int						count;
-	int (*fds)[2];
+	int						(*fds)[2];
 	t_cmd					*cmd;
 	t_env					*env;
 }							t_child_ctx;
@@ -130,7 +129,7 @@ typedef struct s_redir_state
 typedef struct s_pipe_ctx
 {
 	int						count;
-	int (*fds)[2];
+	int						(*fds)[2];
 	pid_t					*pids;
 	t_cmd					*cmds;
 	t_env					*env;
@@ -208,10 +207,19 @@ typedef struct s_len_runner
 
 typedef struct s_expand_node
 {
-	char			*value;
-	int			own;
+	char					*value;
+	int						own;
 	struct s_expand_node	*next;
-}t_expand_node;
+}							t_expand_node;
+
+typedef struct s_glob_state
+{
+	t_expand_node			*head;
+	t_expand_node			*tail;
+	char					**free_list;
+	size_t					free_len;
+	size_t					free_cap;
+}							t_glob_state;
 
 # define TOKEN_META_QUOTED 0x1
 # define TOKEN_META_NO_GLOB 0x2
@@ -256,7 +264,7 @@ const char					*env_get(t_env *env, const char *key);
 int							env_set(t_env *env, const char *key,
 								const char *value);
 void						env_free(t_env *env);
-int	env_unset(t_env *env, const char *key); /* <- novo */
+int							env_unset(t_env *env, const char *key);
 int							env_fix_shlvl(t_env *env);
 
 /* utils/ */
@@ -267,7 +275,7 @@ char						*ft_itoa(int n);
 int							ft_atoi_strict(const char *s, int *ok);
 
 /* env utils (helpers) */
-char	*ft_strdup(const char *s); /* <- novo protótipo */
+char						*ft_strdup(const char *s);
 int							key_matches(const char *entry, const char *key);
 int							env_find_index(t_env *env, const char *key);
 char						**env_grow(t_env *env, size_t add);
@@ -287,9 +295,9 @@ int							builtin_echo(t_env *env, char **argv);
 int							builtin_cd(char **argv, t_env *env);
 int							builtin_env(t_env *env, char **argv);
 int							builtin_export(t_env *env, char **argv);
-int	builtin_unset(t_env *env, char **argv); /* <- novo */
+int							builtin_unset(t_env *env, char **argv);
 int							builtin_exit(t_env *env, char **argv);
-int	builtin_status(t_env *env, char **argv); /* <- novo */
+int							builtin_status(t_env *env, char **argv);
 
 /* --- parse (aspas simples) --- */
 
@@ -306,9 +314,9 @@ int							expand_wildcards(char ***argv);
 void						redir_clear(t_redir *r);
 
 /* sinais */
-void						signals_register_env(t_env *env);
 void						signals_setup_interactive(void);
 void						signals_setup_child(void);
+void						signals_update_env(t_env *env);
 
 /* --- exec --- */
 

@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #include "redir_internal.h"
-
-volatile sig_atomic_t	g_hd_sigint = 0;
+#include "signals_internal.h"
 
 int	write_line_fd(int fd, const char *line)
 {
@@ -34,7 +33,7 @@ int	write_line_fd(int fd, const char *line)
 
 void	heredoc_sigint(int sig)
 {
-	g_hd_sigint = sig;
+	g_signal_last = sig;
 	rl_replace_line("", 0);
 	rl_done = 1;
 	write(STDOUT_FILENO, "\n", 1);
@@ -47,7 +46,7 @@ int	hd_open_pipe(t_hd_session *sess)
 		perror("minishell: pipe");
 		return (1);
 	}
-	g_hd_sigint = 0;
+	g_signal_last = 0;
 	return (0);
 }
 

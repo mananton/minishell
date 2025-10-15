@@ -83,8 +83,9 @@ int	hd_session_loop(t_hd_session *sess)
 int	hd_finalize_session(t_hd_session *sess, t_hd_task *task, int result)
 {
 	hd_restore_signal(sess);
-	if (g_hd_sigint == SIGINT)
+	if (g_signal_last == SIGINT)
 	{
+		g_signal_last = 0;
 		hd_close_pipe(sess->pipefd);
 		redir_close_fd(task->fd_in);
 		return (HDOC_INTERRUPTED);

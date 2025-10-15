@@ -10,23 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "signals_internal.h"
 #include "minishell.h"
-#include <signal.h>
 #include <unistd.h>
 #include <readline/readline.h>
 
-static t_env	*g_sig_env = NULL;
-
-void	signals_register_env(t_env *env)
-{
-	g_sig_env = env;
-}
+volatile sig_atomic_t	g_signal_last = 0;
 
 static void	prompt_sigint(int sig)
 {
-	(void)sig;
-	if (g_sig_env)
-		g_sig_env->last_status = 130;
+	g_signal_last = sig;
 	write(STDOUT_FILENO, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
@@ -42,6 +35,7 @@ void	signals_setup_interactive(void)
 	sa.sa_handler = prompt_sigint;
 	sigaction(SIGINT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
+	g_signal_last = 0;
 }
 
 void	signals_setup_child(void)
@@ -49,4 +43,18 @@ void	signals_setup_child(void)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	signal(SIGPIPE, SIG_DFL);
+}
+
+void	signals_update_env(t_env *env)
+{
+	sig_atomic_t	sig;
+
+	if (!env)
+		return ;
+	sig = g_signal_last;
+	if (sig == 0)
+		return ;
+	g_signal_last = 0;
+	if (sig == SIGINT)
+		env->last_status = 130;
 }

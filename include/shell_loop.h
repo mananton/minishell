@@ -1,29 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   args.c                                             :+:      :+:    :+:   */
+/*   shell_loop.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/15 11:50:12 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 11:50:12 by mananton         ###   ########.fr       */
+/*   Created: 2025/10/15 13:05:12 by mananton          #+#    #+#             */
+/*   Updated: 2025/10/15 13:05:12 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef SHELL_LOOP_H
+# define SHELL_LOOP_H
 
-void	free_argv(char **argv)
-{
-	size_t	i;
+# include "minishell.h"
 
-	if (!argv)
-		return ;
-	i = 0;
-	while (argv[i])
-	{
-		token_meta_forget(argv[i]);
-		free(argv[i]);
-		i++;
-	}
-	free(argv);
-}
+int	minishell_run(t_env *env);
+
+#endif

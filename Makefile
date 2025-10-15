@@ -18,10 +18,19 @@ INCS    = -Iinclude
 SRC     = src/main.c \
           src/utils/io.c \
           src/utils/args.c \
+          src/utils/args_split.c \
           src/utils/ft_itoa.c \
           src/utils/ft_atoi_strict.c \
           src/utils/glob_expand.c \
+          src/utils/glob_expand_collect.c \
+          src/utils/glob_expand_match.c \
+          src/utils/glob_expand_utils.c \
           src/utils/ident.c \
+          src/shell/shell_context.c \
+          src/shell/shell_input.c \
+          src/shell/shell_pipeline.c \
+          src/shell/shell_exec.c \
+          src/shell/shell_loop.c \
           src/builtins/builtins.c \
           src/builtins/builtin_pwd.c \
           src/builtins/builtin_echo.c \
@@ -46,6 +55,7 @@ SRC     = src/main.c \
           src/parse/lexer/lexer_token_prepare.c \
           src/parse/lexer/lexer_build_main.c \
           src/parse/lexer/lexer_build_tokens.c \
+          src/parse/lexer/lexer_simple_token.c \
           src/parse/lexer/lexer_simple_utils.c \
           src/parse/lexer/lexer_split_args.c \
           src/parse/redir/redir_utils.c \
