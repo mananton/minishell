@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 13:42:07 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 12:12:45 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:21:29 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "redir_internal.h"
 
 int	save_stdio_parent(int *saved_in, int *saved_out)

@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/02 11:46:21 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 14:37:12 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:12:01 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "exec_core_internal.h"
 
 static char *const	*envp_from_env(t_env *env)

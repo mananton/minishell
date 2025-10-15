@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 13:40:26 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 13:40:26 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:14:23 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "redir_internal.h"
 
 void	redir_close_fd(int *fd)

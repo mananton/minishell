@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 13:38:53 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 13:38:53 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:20:45 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "redir_internal.h"
 
 char	*expand_heredoc_line(const char *line, t_env *env, const char *status)

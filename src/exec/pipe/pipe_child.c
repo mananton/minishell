@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:03:42 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 15:03:42 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:12:50 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "pipe_internal.h"
 
 void	pipe_run_child_process(t_pipe_ctx *ctx, int index)

@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 13:35:18 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 13:35:18 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:20:33 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "redir_internal.h"
 
 int	is_var_start(char c)

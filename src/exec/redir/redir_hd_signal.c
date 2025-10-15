@@ -6,12 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 13:32:12 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 13:32:12 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:19:33 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "redir_internal.h"
-#include "../signals/signals_internal.h"
 
 int	write_line_fd(int fd, const char *line)
 {

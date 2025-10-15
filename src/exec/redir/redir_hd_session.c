@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 13:33:47 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 12:12:29 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:20:26 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "redir_internal.h"
 
 void	hd_close_pipe(int pipefd[2])

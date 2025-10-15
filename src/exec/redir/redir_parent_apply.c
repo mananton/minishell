@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 13:42:56 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 12:12:40 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:21:25 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "redir_internal.h"
 
 int	apply_redirs_parent(const t_redir *r, t_parent_redir *io, t_env *env)

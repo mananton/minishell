@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 12:33:05 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 12:54:01 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:10:59 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "parse/token_meta_struct.h"
 #include <stdlib.h>
 
 static t_token_meta	**token_meta_head(void)

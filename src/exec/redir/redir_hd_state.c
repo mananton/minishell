@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 13:39:44 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 13:39:44 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:21:04 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "redir_internal.h"
 
 int	hd_ensure_status(char **status, t_env *env)

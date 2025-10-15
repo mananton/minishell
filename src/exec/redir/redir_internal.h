@@ -6,14 +6,14 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 13:30:12 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 13:33:21 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:19:50 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REDIR_INTERNAL_H
 # define REDIR_INTERNAL_H
 
-# include "../signals/signals_internal.h"
+# include "../../signals/signals_internal.h"
 # include "env/env.h"
 # include "redir/redir.h"
 # include <signal.h>

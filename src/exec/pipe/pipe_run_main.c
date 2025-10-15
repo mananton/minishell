@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:04:53 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 15:04:53 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:13:13 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "pipe_internal.h"
 
 int	exec_pipeline(t_cmd *cmds, int count, t_env *env)

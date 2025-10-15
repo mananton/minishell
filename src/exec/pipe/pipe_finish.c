@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:04:21 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 15:04:21 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:13:08 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "pipe_internal.h"
 
 void	pipe_handle_child_status(const t_pipe_ctx *ctx, int index, int status,
