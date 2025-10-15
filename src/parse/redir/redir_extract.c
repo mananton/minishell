@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:20:41 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 14:28:21 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:01:54 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "redir_parse_internal.h"
+#include "minishell.h"
+#include "redir_internal.h"
 #include <stdlib.h>
 
 int	append_redir_token(char **av, size_t idx, t_redir *r)

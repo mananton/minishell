@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:55:21 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 14:00:43 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:00:39 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "lexer_internal.h"
 
 int	skip_blanks_simple(const char *line)

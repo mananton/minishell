@@ -1,25 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer_split_args.c                                 :+:      :+:    :+:   */
+/*   signals.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 15:56:48 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 14:00:43 by mananton         ###   ########.fr       */
+/*   Created: 2025/10/15 13:50:31 by mananton          #+#    #+#             */
+/*   Updated: 2025/10/15 13:37:03 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "lexer_internal.h"
+#ifndef SIGNALS_H
+# define SIGNALS_H
 
-char	**split_args_quotes(const char *line, t_env *env)
-{
-	size_t	count;
+# include "env/env.h"
 
-	if (!line)
-		return (NULL);
-	if (split_count_tokens(line, &count) != 0)
-		return (NULL);
-	return (split_build_argv(line, count, env));
-}
+void						signals_setup_interactive(void);
+void						signals_setup_child(void);
+void						signals_update_env(t_env *env);
+
+#endif

@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:10:31 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 13:10:31 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:57:32 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "shell_loop_internal.h"
+#include "minishell.h"
+#include "shell_internal.h"
 
 static int	prepare_pipeline(char **argv, char ****segs, int *count,
 		t_cmd **cmds)

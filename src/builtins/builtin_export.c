@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin_export_internal.h"
+#include "export_internal.h"
 
 int	builtin_export(t_env *env, char **argv)
 {

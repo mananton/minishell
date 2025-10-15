@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:50:12 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 13:58:50 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:01:07 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "lexer_internal.h"
 
 void	init_expand_ctx(t_expand_ctx *expand, const t_build_ctx *ctx,

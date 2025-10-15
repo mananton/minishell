@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:46:42 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 15:46:42 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:00:22 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "lexer_internal.h"
 
 char	*dup_var_name(const char *s, size_t len)

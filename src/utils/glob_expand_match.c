@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:32:01 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 12:32:01 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:54:37 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "glob_expand_internal.h"
+#include "minishell.h"
+#include "glob_internal.h"
 
 static int	append_match_value(glob_t *gl, size_t idx,
 		t_expand_node **head, t_expand_node **tail)

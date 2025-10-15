@@ -1,25 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer_split_args.c                                 :+:      :+:    :+:   */
+/*   pipeline_internal.h                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 15:56:48 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 14:00:43 by mananton         ###   ########.fr       */
+/*   Created: 2025/10/14 16:32:12 by mananton          #+#    #+#             */
+/*   Updated: 2025/10/15 13:30:08 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "lexer_internal.h"
+#ifndef PIPELINE_INTERNAL_H
+# define PIPELINE_INTERNAL_H
 
-char	**split_args_quotes(const char *line, t_env *env)
-{
-	size_t	count;
+# include "parse/pipeline.h"
 
-	if (!line)
-		return (NULL);
-	if (split_count_tokens(line, &count) != 0)
-		return (NULL);
-	return (split_build_argv(line, count, env));
-}
+int	count_pipes(char **av);
+int	split_fill(char **argv, char ***tmp, int count);
+
+#endif

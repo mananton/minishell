@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 11:32:00 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 10:53:53 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:00:33 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "lexer_internal.h"
 
 static int	update_quotes_simple(char c, t_quote_state *quotes)

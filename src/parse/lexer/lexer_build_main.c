@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:49:35 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 15:49:35 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:01:11 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "lexer_internal.h"
 
 char	*build_token(const t_expand_ctx *base, size_t start, int *quoted_any)

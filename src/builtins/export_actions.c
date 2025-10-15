@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 14:32:29 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/13 14:32:29 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:58:57 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtin_export_internal.h"
+#include "minishell.h"
+#include "export_internal.h"
 
 static int	export_store_assignment(t_env *env, char *key, const char *value)
 {

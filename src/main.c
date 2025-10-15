@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "shell_loop.h"
+#include "shell/loop.h"
 
 static int	init_minishell(t_env **env, char **envp)
 {

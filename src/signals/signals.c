@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "signals_internal.h"
-#include "minishell.h"
+#include "signals/signals.h"
+#include "env/env.h"
 #include <unistd.h>
 #include <readline/readline.h>
 

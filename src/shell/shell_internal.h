@@ -1,19 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shell_loop_internal.h                              :+:      :+:    :+:   */
+/*   shell_internal.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:05:44 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 13:05:44 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:34:34 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SHELL_LOOP_INTERNAL_H
-# define SHELL_LOOP_INTERNAL_H
+#ifndef SHELL_INTERNAL_H
+# define SHELL_INTERNAL_H
 
-# include "shell_loop.h"
+# include "shell/loop.h"
+# include "redir/redir.h"
+# include "parse/lexer.h"
+# include "parse/pipeline.h"
+# include "exec/exec.h"
 
 typedef struct s_shell_cmd
 {

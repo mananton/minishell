@@ -6,11 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/11 13:05:00 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 11:49:25 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:11:07 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "glob_expand_internal.h"
+#include "glob_internal.h"
 
 static void	release_free_list(t_glob_state *st)
 {

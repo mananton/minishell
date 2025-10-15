@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:11:12 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 12:23:56 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:57:48 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "shell_loop_internal.h"
+#include "minishell.h"
+#include "shell_internal.h"
 
 int	shell_parse_redirs_stage(t_shell_cmd *cmd)
 {

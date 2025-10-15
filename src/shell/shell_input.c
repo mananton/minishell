@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 13:06:55 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 13:10:02 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:57:11 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "shell_loop_internal.h"
+#include "minishell.h"
+#include "shell_internal.h"
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>

@@ -1,19 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_export_internal.h                          :+:      :+:    :+:   */
+/*   export_internal.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 14:32:11 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 14:37:00 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:47:12 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTIN_EXPORT_INTERNAL_H
-# define BUILTIN_EXPORT_INTERNAL_H
+#ifndef EXPORT_INTERNAL_H
+# define EXPORT_INTERNAL_H
 
-# include "minishell.h"
+# include <stddef.h>
+# include "env/env.h"
+# include "utils/utils.h"
 
 char		*dup_n(const char *s, size_t n);
 const char	*find_equal(const char *s);

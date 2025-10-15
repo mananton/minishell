@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:48:37 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 15:48:37 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:01:18 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "lexer_internal.h"
 
 static int	copy_escape_double(const t_expand_ctx *ctx, t_copy_state *state,

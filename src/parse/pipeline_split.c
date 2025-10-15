@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:32:58 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 16:32:58 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:59:40 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipeline_parse_internal.h"
+#include "minishell.h"
+#include "pipeline_internal.h"
 #include <stdlib.h>
 
 int	split_pipeline(char **argv, char ****segs, int *count)

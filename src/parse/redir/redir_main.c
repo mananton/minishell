@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:21:16 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 16:21:16 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:02:01 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "redir_parse_internal.h"
+#include "minishell.h"
+#include "redir_internal.h"
 #include <stdlib.h>
 
 int	parse_redirs(char **argv_in, char ***argv_out, t_redir *r)

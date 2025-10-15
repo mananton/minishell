@@ -6,10 +6,11 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 15:47:18 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 15:47:18 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:01:02 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "lexer_internal.h"
 
 size_t	dollar_literal_len(size_t *i)

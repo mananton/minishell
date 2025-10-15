@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:30:35 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/15 12:30:35 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:55:54 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "glob_expand_internal.h"
+#include "minishell.h"
+#include "glob_internal.h"
 
 int	glob_contains_wildcards(const char *s)
 {

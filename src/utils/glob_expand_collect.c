@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "glob_expand_internal.h"
+#include "glob_internal.h"
 
 size_t	glob_count_nodes(t_expand_node *node)
 {

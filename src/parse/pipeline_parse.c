@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:59:31 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 14:26:16 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 13:59:25 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipeline_parse_internal.h"
+#include "minishell.h"
+#include "pipeline_internal.h"
 #include <stdlib.h>
 
 static int	is_pipe_token(char *s)

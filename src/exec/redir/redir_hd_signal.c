@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "redir_internal.h"
-#include "signals_internal.h"
+#include "../signals/signals_internal.h"
 
 int	write_line_fd(int fd, const char *line)
 {

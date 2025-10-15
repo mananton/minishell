@@ -6,11 +6,12 @@
 /*   By: mananton <telesmanuel@hotmail.com>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 16:20:05 by mananton          #+#    #+#             */
-/*   Updated: 2025/10/14 16:20:05 by mananton         ###   ########.fr       */
+/*   Updated: 2025/10/15 14:01:46 by mananton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "redir_parse_internal.h"
+#include "minishell.h"
+#include "redir_internal.h"
 #include <stdlib.h>
 
 size_t	count_argv_clean(char **av)
